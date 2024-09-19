@@ -107,14 +107,21 @@ export default function Lab1() {
         <h4>Image tag</h4>
         Loading an image from the internet:
         <br />
-        <img id="wd-starship"
+        <img 
+          id="wd-starship"
           width="400px"
           src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"
+          alt="SpaceX Starship spacecraft"
         />
         <br />
         Loading a local image:
         <br />
-        <img id="wd-naruto" src="C:\Users\daksh\kanbas-react-web-app\teslabot.jpg" height="300px" />
+        <img 
+          id="wd-naruto" 
+          src="/images/teslabot.jpg" 
+          height="300px" 
+          alt="Tesla Bot"
+        />
       </div>
       <div id="wd-forms">
         <h4>Form Elements</h4>
@@ -130,11 +137,10 @@ export default function Lab1() {
           <label htmlFor="wd-text-fields-last-name">Last name:</label>
           <input type="text" id="wd-text-fields-last-name" placeholder="Doe"
             value="Wonderland" title="The last name" />
-          {/* copy rest of form elements here  */}
         </form>
       </div>
       <h5>Text boxes</h5>
-      <label>Biography:</label><br />
+      <label htmlFor="wd-textarea">Biography:</label><br />
       <textarea id="wd-textarea" cols={30} rows={10}>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
@@ -166,13 +172,6 @@ export default function Lab1() {
 
       <input type="radio" name="radio-genre" id="wd-radio-fantasy" />
       <label htmlFor="wd-radio-fantasy">Fantasy</label>
-
-      <input type="checkbox" name="NAME2"
-        value="OPTION1" checked />
-      <input type="checkbox" name="NAME2"
-        value="OPTION2" />
-      <input type="checkbox" name="NAME2"
-        value="OPTION3" checked />
 
       <h5 id="wd-checkboxes">Checkboxes</h5>
       <label>Favorite movie genre:</label><br />
@@ -238,14 +237,16 @@ export default function Lab1() {
 
       <h4>Anchor tag</h4>
       Please
-      <a id="wd-lipsum" href="https://www.lipsum.com">click here</a>
+      <a 
+        id="wd-lipsum" 
+        href="https://www.lipsum.com" 
+        target="_blank" 
+        rel="noreferrer"
+      >
+        click here
+      </a>
       to get dummy text<br />
-
-
-
 
     </div>
   );
-
 }
-
