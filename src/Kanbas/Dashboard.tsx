@@ -8,7 +8,7 @@ export default function Dashboard() {
         <div className="wd-dashboard-course">
           <Link className="wd-dashboard-course-link"
                 to="/Kanbas/Courses/1234/Home">
-            <img src="/images/reactjs.jpg" width={200} />
+            <img src="C:\Users\daksh\kanbas-react-web-app\images\reactjs.webp" width={200} />
             <div>
               <h5>
                  CS1234 React JS
@@ -23,7 +23,7 @@ export default function Dashboard() {
         <div className="wd-dashboard-course">
         <Link className="wd-dashboard-course-link"
                 to="/Kanbas/Courses/1234/Home">
-            <img src="/images/reactjs.jpg" width={200} />
+            <img src="C:\Users\daksh\kanbas-react-web-app\images\reactjs.webp" width={200} />
             <div>
               <h5>
                  CS5610 Web Development
@@ -39,7 +39,7 @@ export default function Dashboard() {
         <div className="wd-dashboard-course">
         <Link className="wd-dashboard-course-link"
                 to="/Kanbas/Courses/1234/Home">
-            <img src="/images/reactjs.jpg" width={200} />
+            <img src="C:\Users\daksh\kanbas-react-web-app\images\reactjs.webp" width={200} />
             <div>
               <h5>
                  CS5010 Program Designing Paradigm
