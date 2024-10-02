@@ -1,0 +1,17 @@
+/* Navigation*/
+.list-group.wd > .list-group-item.active {
+    color: black;
+    background-color: white;
+    border-left: 3px solid black !important;
+  }
+  .wd-kanbas-nav-item.active {
+    background-color: white;
+  }
+  
+  .wd-kanbas-nav-item.active .wd-kanbas-nav-link {
+    color: red;
+  }
+  
+  .wd-kanbas-nav-item.active .wd-kanbas-nav-icon {
+    color: red;
+  }
