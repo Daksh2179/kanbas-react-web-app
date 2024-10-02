@@ -1,0 +1,149 @@
+.wd-assignments {
+    padding: 20px;
+  }
+  
+  .wd-assignments-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .wd-search-group {
+    position: relative;
+    width: 300px;
+  }
+  
+  .wd-search-input {
+    padding-right: 30px;
+  }
+  
+  .wd-search-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+  }
+  
+  .wd-button-group button {
+    margin-left: 10px;
+  }
+  
+  .wd-assignments-content {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+  }
+  
+  .wd-assignments-title {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .wd-assignments-title h2 {
+    margin: 0 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .wd-total-percentage {
+    margin-left: auto;
+    margin-right: 10px;
+    color: #6c757d;
+  }
+  
+  .wd-assignments-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .wd-assignment-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-left: 4px solid #28a745;
+  }
+  
+  .wd-assignment-header {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+  
+  .wd-assignment-name {
+    font-weight: bold;
+    color: #d9534f;
+  }
+  
+  .wd-assignment-details {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+  
+  .wd-assignment-actions {
+    display: flex;
+    align-items: center;
+  }
+  
+  .wd-assignment-actions > * {
+    margin-left: 10px;
+  }
+  
+  .btn-outline-secondary {
+    color: #000;
+    border-color: #ced4da;
+  }
+  
+  .btn-danger {
+    background-color: #d9534f;
+    border-color: #d9534f;
+  }
+
+  /* AssignmentEditor.css */
+#wd-assignments-editor {
+    font-family: Arial, sans-serif;
+  }
+  
+  #wd-assignments-editor h2 {
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
+  #wd-assignments-editor h3 {
+    font-size: 1.5rem;
+  }
+  
+  #wd-assignments-editor label {
+    font-weight: bold;
+    color: #444;
+  }
+  
+  #wd-assignments-editor .form-control,
+  #wd-assignments-editor .form-select {
+    border-radius: 0;
+  }
+  
+  #wd-assignments-editor .input-group-text {
+    background-color: #f8f9fa;
+    border-radius: 0;
+  }
+  
+  #wd-assignments-editor .btn-light {
+    background-color: #f8f9fa;
+    border-color: #ddd;
+  }
+  
+  #wd-assignments-editor .btn-danger {
+    background-color: #d9534f;
+    border-color: #d9534f;
+  }
+  
+  #wd-assignments-editor .form-check-input:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+  }

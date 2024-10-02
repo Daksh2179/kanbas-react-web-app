@@ -1,0 +1,139 @@
+body   {  margin: 0;  padding: 0;  }
+body * {  font-family: Arial, Helvetica, sans-serif;  }
+
+@media (min-width: 768px) {
+  #wd-kanbas .wd-main-content-offset {
+    padding-left: 140px !important;
+  }
+}
+.wd-kanbas-nav-item.active {
+  background-color: white;
+}
+
+.wd-kanbas-nav-item.active .wd-kanbas-nav-link {
+  color: red;
+}
+
+.wd-kanbas-nav-item.active .wd-kanbas-nav-icon {
+  color: red;
+}
+
+/*dashboard style*/
+
+#wd-dashboard {
+  padding: 20px;
+  padding-left: 40px;
+}
+
+/* Course Card Styles */
+.wd-dashboard-course {
+  width: 260px !important; 
+  margin-bottom: 20px !important;
+  padding: 0 10px;
+}
+
+.card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-img-top {
+  height: 150px;
+  object-fit: cover;
+}
+
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.card-title {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.card-text {
+  margin-bottom: 1rem;
+  flex-grow: 1;
+  font-size: 0.9rem;
+}
+
+.card .btn {
+  align-self: flex-start;
+  margin-top: auto;
+  position: centre;
+}
+
+#wd-dashboard-courses > .row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -10px;
+  margin-left: -10px;
+}
+
+/* Media queries for responsive layout */
+@media (min-width: 1200px) {
+  #wd-dashboard-courses > .row > * {
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+}
+
+@media (max-width: 1199px) and (min-width: 992px) {
+  #wd-dashboard-courses > .row > * {
+    flex: 0 0 33.333%;
+    max-width: 33.333%;
+  }
+}
+
+@media (max-width: 991px) and (min-width: 768px) {
+  #wd-dashboard-courses > .row > * {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 767px) {
+  #wd-dashboard-courses > .row > * {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+.wd-kanbas-nav-item.active {
+  background-color: white;
+}
+
+.wd-kanbas-nav-item.active .wd-kanbas-nav-link {
+  color: red;
+}
+
+.wd-kanbas-nav-item.active .wd-kanbas-nav-icon {
+  color: red;
+}
+
+/* Navigation*/
+.list-group.wd > .list-group-item.active {
+  color: black;
+  background-color: white;
+  border-left: 3px solid black !important;
+}
+/* Modules*/
+.btn-secondary {
+  --bs-btn-color: #000 !important;
+  --bs-btn-bg: #c7cdd1 !important;
+  --bs-btn-border-color: #c7cdd1 !important;
+  --bs-btn-hover-color: #fff !important;
+}
+.bg-secondary {
+  --bs-secondary-rgb: 199, 205, 209;
+}
+.list-group-item {
+  --bs-list-group-border-color: gray;
+}
+.wd-lesson {
+  border-left: 3px solid green !important;
+}
