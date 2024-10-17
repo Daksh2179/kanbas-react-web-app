@@ -1,71 +1,68 @@
+import React from "react";
+import { useParams } from "react-router-dom";
+import { user, enrollment, isValidRole } from "../../Database";
 import { FaUserCircle } from "react-icons/fa";
+import { User, Enrollment } from "../../Database";
+
 export default function PeopleTable() {
+  const { cid } = useParams<{ cid: string }>();
+  const users: User[] = user;
+  const enrollments: Enrollment[] = enrollment;
+
+  // Filter enrollments for the current course
+  const courseEnrollments = enrollments.filter((e: Enrollment) => e.course.trim() === cid?.trim());
+
+  // Debugging: check if enrollments are being filtered correctly
+  console.log("Filtered Enrollments: ", courseEnrollments);
+  console.log("Course ID from URL: ", cid);
+
   return (
     <div id="wd-people-table">
       <table className="table table-striped">
         <thead>
-          <tr><th>Name</th><th>Login ID</th><th>Section</th><th>Role</th><th>Last Activity</th><th>Total Activity</th></tr>
+          <tr>
+            <th>Name</th>
+            <th>Login ID</th>
+            <th>Role</th>
+            <th>Last Activity</th>
+            <th>Total Activity</th>
+          </tr>
         </thead>
         <tbody>
-          <tr><td className="wd-full-name text-nowrap">
-              <FaUserCircle className="me-2 fs-1 text-secondary" />
-              <span className="wd-first-name">Tony</span>{" "}
-              <span className="wd-last-name">Stark</span></td>
-            <td className="wd-login-id">001234561S</td>
-            <td className="wd-section">S101</td>
-            <td className="wd-role">STUDENT</td>
-            <td className="wd-last-activity">2020-10-01</td>
-            <td className="wd-total-activity">10:21:32</td> </tr>
+          {courseEnrollments.length > 0 ? (
+            courseEnrollments.map((e: Enrollment) => {
+              const u = users.find((u: User) => u._id === e.user);
 
-            <tr><td className="wd-full-name text-nowrap">
-              <FaUserCircle className="me-2 fs-1 text-secondary" />
-              <span className="wd-first-name">Bruce</span>{" "}
-              <span className="wd-last-name">Banner</span></td>
-            <td className="wd-login-id">001234561S</td>
-            <td className="wd-section">S101</td>
-            <td className="wd-role">STUDENT</td>
-            <td className="wd-last-activity">2020-10-01</td>
-            <td className="wd-total-activity">10:55:42</td> </tr>
+              // Debugging: check if users are found correctly
+              console.log("User for enrollment: ", u);
 
-            <tr><td className="wd-full-name text-nowrap">
-              <FaUserCircle className="me-2 fs-1 text-secondary" />
-              <span className="wd-first-name">Steve</span>{" "}
-              <span className="wd-last-name">Rogers</span></td>
-            <td className="wd-login-id">001234561S</td>
-            <td className="wd-section">S101</td>
-            <td className="wd-role">STUDENT</td>
-            <td className="wd-last-activity">2020-10-02</td>
-            <td className="wd-total-activity">12:44:22</td> </tr>
-
-            <tr><td className="wd-full-name text-nowrap">
-              <FaUserCircle className="me-2 fs-1 text-secondary" />
-              <span className="wd-first-name">Peter</span>{" "}
-              <span className="wd-last-name">Parker</span></td>
-            <td className="wd-login-id">001234561S</td>
-            <td className="wd-section">S101</td>
-            <td className="wd-role">STUDENT</td>
-            <td className="wd-last-activity">2020-10-03</td>
-            <td className="wd-total-activity">09:27:44</td> </tr>
-
-            <tr><td className="wd-full-name text-nowrap">
-              <FaUserCircle className="me-2 fs-1 text-secondary" />
-              <span className="wd-first-name">Clark</span>{" "}
-              <span className="wd-last-name">Kent</span></td>
-            <td className="wd-login-id">001234561S</td>
-            <td className="wd-section">S101</td>
-            <td className="wd-role">STUDENT</td>
-            <td className="wd-last-activity">2020-10-02</td>
-            <td className="wd-total-activity">11:21:32</td> </tr>
-
-            <tr><td className="wd-full-name text-nowrap">
-              <FaUserCircle className="me-2 fs-1 text-secondary" />
-              <span className="wd-first-name">Bruce</span>{" "}
-              <span className="wd-last-name">Wayne</span></td>
-            <td className="wd-login-id">001234561S</td>
-            <td className="wd-section">S101</td>
-            <td className="wd-role">STUDENT</td>
-            <td className="wd-last-activity">2020-10-04</td>
-            <td className="wd-total-activity">11:21:32</td> </tr>
+              return u ? (
+                <tr key={e._id}>
+                  <td className="wd-full-name text-nowrap">
+                    <FaUserCircle className="me-2 fs-1 text-secondary" />
+                    <span className="wd-first-name">{u.firstName}</span>{" "}
+                    <span className="wd-last-name">{u.lastName}</span>
+                  </td>
+                  <td className="wd-login-id">{u.loginId}</td>
+                  <td className="wd-role">
+                    {u.role && isValidRole(u.role) ? u.role : "Unknown"}
+                  </td>
+                  <td className="wd-last-activity">{u.lastActivity}</td>
+                  <td className="wd-total-activity">{u.totalActivity}</td>
+                </tr>
+              ) : (
+                <tr key={e._id}>
+                  <td colSpan={5}>User not found for this enrollment</td>
+                </tr>
+              );
+            })
+          ) : (
+            <tr>
+              <td colSpan={5}>No enrollments found for this course</td>
+            </tr>
+          )}
         </tbody>
       </table>
-    </div> );}
+    </div>
+  );
+}

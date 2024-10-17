@@ -1,0 +1,23 @@
+[
+    { "_id": "1", "user": "123", "course": "CS1234" },
+    { "_id": "2", "user": "234", "course": "CS1234" },
+    { "_id": "3", "user": "345", "course": "CS1234" },
+    { "_id": "4", "user": "456", "course": "CS1234" },
+    { "_id": "5", "user": "567", "course": "CS1234" },
+    { "_id": "6", "user": "234", "course": "CS5610" },
+    { "_id": "7", "user": "789", "course": "CS5610" },
+    { "_id": "8", "user": "890", "course": "CS5610" },
+    { "_id": "9", "user": "123", "course": "CS5610" },
+    { "_id": "10", "user": "111", "course": "CS5717" },
+    { "_id": "11", "user": "222", "course": "CS5717" },
+    { "_id": "12", "user": "333", "course": "CS5801" },
+    { "_id": "13", "user": "444", "course": "CS5801" },
+    { "_id": "14", "user": "555", "course": "CS5010" },
+    { "_id": "15", "user": "666", "course": "CS5010" },
+    { "_id": "16", "user": "777", "course": "CS5890" },
+    { "_id": "17", "user": "888", "course": "CS5890" },
+    { "_id": "18", "user": "999", "course": "CS5900" },
+    { "_id": "19", "user": "100", "course": "CS5900" },
+    { "_id": "20", "user": "101", "course": "CS6150" }
+  ]
+  

@@ -1,43 +1,48 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaUser, FaTachometerAlt, FaBook, FaCalendarAlt, FaInbox, FaClock, FaQuestion } from 'react-icons/fa';
-import { BsGoogle } from 'react-icons/bs';
-import { MdOndemandVideo } from 'react-icons/md';
+import { FaUser, FaTachometerAlt, FaBook, FaCalendarAlt, FaInbox, FaCog } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./style.css";
 
 const links = [
-  { to: '/Kanbas/Account', icon: FaUser, label: 'Account', iconClass: 'text-white' },
+  { to: '/Kanbas/Account', icon: FaUser, label: 'Account', iconClass: 'text-danger' },
   { to: '/Kanbas/Dashboard', icon: FaTachometerAlt, label: 'Dashboard' },
   { to: '/Kanbas/Courses', icon: FaBook, label: 'Courses' },
   { to: '/Kanbas/Calendar', icon: FaCalendarAlt, label: 'Calendar' },
   { to: '/Kanbas/Inbox', icon: FaInbox, label: 'Inbox' },
-  { to: '/Kanbas/History', icon: FaClock, label: 'History' },
-  { to: '/Kanbas/Commons', icon: BsGoogle, label: 'Commons' },
-  { to: '/Kanbas/Studio', icon: MdOndemandVideo, label: 'Studio' },
-  { to: '/Kanbas/Help', icon: FaQuestion, label: 'Help' },
+  { to: '/Labs', icon: FaCog, label: 'Labs' },
 ];
 
 function KanbasNavigation() {
   const { pathname } = useLocation();
 
   return (
-    <div className="list-group wd-kanbas-navigation" style={{ width: '110px', position: 'fixed', left: 0, top: 0, bottom: 0 }}>
-      <Link to="/Kanbas" className="list-group-item border-0 bg-black text-center py-4">
-        <img src="/images/neulogo.svg" alt="N Logo" width="60px" />
+    <div className="wd-kanbas-navigation d-flex flex-column bg-black" style={{ width: '84px', position: 'fixed', left: 0, top: 0, bottom: 0, overflowY: 'auto' }}>
+      <Link to="/Kanbas" className="p-2 text-center">
+        <img src="/images/neulogo.svg" alt="N Logo" width="50" height="50" />
       </Link>
-      {links.map((link) => (
-        <Link
-          key={link.to}
-          to={link.to}
-          className={`list-group-item border-0 text-center py-3 ${
-            pathname.includes(link.label) ? 'bg-white text-danger' : 'bg-black text-white'
-          }`}
-        >
-          <link.icon className={`fs-2 ${link.iconClass || 'text-danger'}`} />
-          <div className="small mt-1">{link.label}</div>
-        </Link>
-      ))}
+      {links.map((link) => {
+        const isSelected = pathname.includes(link.label);
+        return (
+          <Link
+            key={link.to}
+            to={link.to}
+            className={`p-2 text-center text-decoration-none ${
+              isSelected ? 'bg-white' : ''
+            }`}
+          >
+            <link.icon 
+              className={`fs-5 text-danger`} 
+            />
+            <div 
+              className={`small mt-1 ${isSelected ? 'text-danger' : 'text-white'}`}
+              style={{ fontSize: '0.65rem' }}
+            >
+              {link.label}
+            </div>
+          </Link>
+        );
+      })}
     </div>
   );
 }

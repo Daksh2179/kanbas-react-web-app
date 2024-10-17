@@ -1,41 +1,69 @@
-body   {  margin: 0;  padding: 0;  }
-body * {  font-family: Arial, Helvetica, sans-serif;  }
-
-@media (min-width: 768px) {
-  #wd-kanbas .wd-main-content-offset {
-    padding-left: 140px !important;
-  }
+/* Global Styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Kanbas Navigation Styles */
+.wd-kanbas-navigation {
+  width: 84px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1030;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+}
+
+.wd-kanbas-navigation a {
+  width: 100%;
+  padding: 8px 0;
+  text-decoration: none;
+}
+
+.wd-kanbas-navigation a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.wd-kanbas-navigation a.active,
 .wd-kanbas-nav-item.active {
   background-color: white;
 }
 
-.wd-kanbas-nav-item.active .wd-kanbas-nav-link {
-  color: red;
+.wd-kanbas-navigation .icon,
+.wd-kanbas-nav-icon {
+  font-size: 1.25rem;
+  margin-bottom: 2px;
 }
 
+.wd-kanbas-navigation .label {
+  font-size: 0.65rem;
+  white-space: nowrap;
+}
+
+.wd-kanbas-nav-item.active .wd-kanbas-nav-link,
 .wd-kanbas-nav-item.active .wd-kanbas-nav-icon {
   color: red;
 }
 
-/*dashboard style*/
-
+/* Dashboard Styles */
 #wd-dashboard {
-  padding: 20px;
-  padding-left: 40px;
+  padding: 10px;
+  padding-left: 10px;
 }
 
-/* Course Card Styles */
 .wd-dashboard-course {
-  width: 260px !important; 
-  margin-bottom: 20px !important;
-  padding: 0 10px;
+  width: 100%;
+  max-width: 260px;
+  margin-bottom: 20px;
 }
 
+/* Card Styles */
 .card {
   height: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
 .card-img-top {
@@ -44,29 +72,25 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
 }
 
 .card-body {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 1rem;
 }
 
 .card-title {
-  margin-bottom: 0.5rem;
   font-size: 1rem;
 }
 
 .card-text {
-  margin-bottom: 1rem;
-  flex-grow: 1;
   font-size: 0.9rem;
+  flex-grow: 1;
 }
 
 .card .btn {
   align-self: flex-start;
   margin-top: auto;
-  position: centre;
 }
 
+/* Responsive Grid for Course Cards */
 #wd-dashboard-courses > .row {
   display: flex;
   flex-wrap: wrap;
@@ -74,7 +98,59 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
   margin-left: -10px;
 }
 
-/* Media queries for responsive layout */
+#wd-dashboard-courses > .row > * {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+/* Media Queries */
+@media (min-width: 399px) {
+  #wd-kanbas .wd-main-content-offset {
+    padding-left: 10px !important;
+  }
+}
+
+@media (max-height: 600px) {
+  .wd-kanbas-navigation {
+    justify-content: flex-start;
+  }
+  
+  .wd-kanbas-navigation a {
+    padding: 5px 0;
+  }
+  
+  .wd-kanbas-navigation .icon {
+    font-size: 1rem;
+    margin-bottom: 1px;
+  }
+  
+  .wd-kanbas-navigation .label {
+    font-size: 0.6rem;
+  }
+}
+
+@media (min-width: 768px) {
+  #wd-dashboard {
+    margin-left: 84px; /* Match the width of .wd-kanbas-navigation */
+  }
+  .wd-main-content-offset {
+    margin-left: 110px; /* Adjust based on your navbar width */
+  }
+}
+
+@media (max-width: 767px) {
+  #wd-dashboard {
+    margin-left: 0;
+    padding-left: 94px; /* 84px for nav + 10px padding */
+  }
+}
+
+@media (max-width: 750px) {
+  #wd-dashboard {
+    margin-left: 10px;
+  }
+}
+
 @media (min-width: 1200px) {
   #wd-dashboard-courses > .row > * {
     flex: 0 0 25%;
@@ -102,18 +178,3 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
     max-width: 100%;
   }
 }
-
-.wd-kanbas-nav-item.active {
-  background-color: white;
-}
-
-.wd-kanbas-nav-item.active .wd-kanbas-nav-link {
-  color: red;
-}
-
-.wd-kanbas-nav-item.active .wd-kanbas-nav-icon {
-  color: red;
-}
-
-
-
