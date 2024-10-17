@@ -9,10 +9,18 @@ import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { IoAnalyticsOutline } from "react-icons/io5";
 import { IoNotificationsOutline } from "react-icons/io5";
 
-export default function CourseStatus() {
+interface CourseStatusProps {
+  course: {
+    _id: string;
+    name: string;
+    // Add other course properties as needed
+  };
+}
+
+export default function CourseStatus({ course }: CourseStatusProps) {
   return (
     <div id="wd-course-status" className="bg-light p-3 rounded" style={{ width: "300px" }}>
-      <h2 className="mb-3">Course Status</h2>
+      <h2 className="mb-3">Course Status: {course.name}</h2>
       <div className="d-flex mb-3">
         <div className="w-50 pe-1">
           <button className="btn btn-lg btn-secondary w-100 text-nowrap">

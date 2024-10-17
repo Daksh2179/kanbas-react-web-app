@@ -1,22 +1,53 @@
-import { Link } from "react-router-dom";
-import "./style.css"
-export default function CoursesNavigation() {
-  return (
-    <div id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
-      <Link to="/Kanbas/Courses/1234/Home" id="wd-course-home-link"
-        className="list-group-item active border border-0"> Home </Link>
-      <Link to="/Kanbas/Courses/1234/Modules" id="wd-course-modules-link"
-        className="list-group-item text-danger border border-0"> Modules </Link>
-      <Link to="/Kanbas/Courses/1234/Piazza" id="wd-course-piazza-link"
-        className="list-group-item text-danger border border-0"> Piazza </Link>
-      <Link to="/Kanbas/Courses/1234/Zoom" id="wd-course-zoom-link"
-        className="list-group-item text-danger border border-0"> Zoom </Link>
-      <Link to="/Kanbas/Courses/1234/Assignments" id="wd-course-quizzes-link"
-        className="list-group-item text-danger border border-0"> Assignments </Link>
-      <Link to="/Kanbas/Courses/1234/Quizzes" id="wd-course-assignments-link"
-        className="list-group-item text-danger border border-0"> Quizzes </Link>
-      <Link to="/Kanbas/Courses/1234/People" id="wd-course-people-link"
-        className="list-group-item text-danger border border-0" > People </Link>
-    </div>
-);}
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import './style.css';
+import { FaHome, FaNetworkWired, FaBook, FaVideo, FaClipboardList, FaQuestionCircle, FaGraduationCap, FaUsers } from "react-icons/fa";
 
+interface Course {
+  _id: string;
+  name: string;
+  number: string;
+}
+
+interface NavigationProps {
+  selectedCourse: Course;
+}
+
+function Navigation({ selectedCourse }: NavigationProps) {
+  const { pathname } = useLocation();
+
+  const courseLinks = [
+    { name: "Home", icon: FaHome },
+    { name: "Modules", icon: FaNetworkWired },
+    { name: "Piazza", icon: FaBook },
+    { name: "Zoom", icon: FaVideo },
+    { name: "Assignments", icon: FaClipboardList },
+    { name: "Quizzes", icon: FaQuestionCircle },
+    { name: "Grades", icon: FaGraduationCap },
+    { name: "People", icon: FaUsers }
+  ];
+
+  return (
+    <div className="nav-wrapper">
+      <h5 className="mb-4 text-center" style={{ color: '#dc3545' }}>{selectedCourse.number}</h5>
+      <ul className="nav flex-column">
+        {courseLinks.map((link, index) => (
+          <li
+            key={index}
+            className={`wd-kanbas-nav-item ${pathname.includes(link.name.toLowerCase()) ? "active" : ""}`}
+          >
+            <Link
+              to={`/Kanbas/Courses/${selectedCourse._id}/${link.name}`}
+              className="wd-kanbas-nav-link"
+            >
+              <link.icon className="wd-kanbas-nav-icon" />
+              {link.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default Navigation;
