@@ -37,7 +37,7 @@ const Courses: React.FC = () => {
             <Route path="/Assignments/:aid" element={<AssignmentEditor />} />
             <Route path="Quizzes" element={<div>Quizzes Content for {course.name}</div>} />
             <Route path="Grades" element={<div>Grades Content for {course.name}</div>} />
-            <Route path="People" element={<PeopleTable course={course} />} />
+            <Route path="People" element={<PeopleTable />} />
           </Routes>
         </div>
       </div>

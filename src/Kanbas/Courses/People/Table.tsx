@@ -1,3 +1,4 @@
+// PeopleTable.tsx
 import React from "react";
 import { useParams } from "react-router-dom";
 import { user, enrollment, isValidRole } from "../../Database";
@@ -5,16 +6,12 @@ import { FaUserCircle } from "react-icons/fa";
 import { User, Enrollment } from "../../Database";
 
 export default function PeopleTable() {
-  const { cid } = useParams<{ cid: string }>();
+  const { cid } = useParams<{ cid: string }>(); // Get the course ID from the URL
   const users: User[] = user;
   const enrollments: Enrollment[] = enrollment;
 
   // Filter enrollments for the current course
   const courseEnrollments = enrollments.filter((e: Enrollment) => e.course.trim() === cid?.trim());
-
-  // Debugging: check if enrollments are being filtered correctly
-  console.log("Filtered Enrollments: ", courseEnrollments);
-  console.log("Course ID from URL: ", cid);
 
   return (
     <div id="wd-people-table">
@@ -32,9 +29,6 @@ export default function PeopleTable() {
           {courseEnrollments.length > 0 ? (
             courseEnrollments.map((e: Enrollment) => {
               const u = users.find((u: User) => u._id === e.user);
-
-              // Debugging: check if users are found correctly
-              console.log("User for enrollment: ", u);
 
               return u ? (
                 <tr key={e._id}>
