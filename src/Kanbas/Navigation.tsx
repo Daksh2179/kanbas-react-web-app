@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaUser, FaTachometerAlt, FaBook, FaCalendarAlt, FaInbox, FaClock, FaQuestion } from 'react-icons/fa';
-import { BsGoogle } from 'react-icons/bs';
-import { MdOndemandVideo } from 'react-icons/md';
+import { FaUser, FaTachometerAlt, FaBook, FaCalendarAlt, FaInbox, FaClock, FaQuestion, FaFlask } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./style.css";
 
@@ -11,11 +9,9 @@ const links = [
   { to: '/Kanbas/Dashboard', icon: FaTachometerAlt, label: 'Dashboard' },
   { to: '/Kanbas/Courses', icon: FaBook, label: 'Courses' },
   { to: '/Kanbas/Calendar', icon: FaCalendarAlt, label: 'Calendar' },
+  { to: '/Labs', icon: FaFlask, label: 'Labs' },
   { to: '/Kanbas/Inbox', icon: FaInbox, label: 'Inbox' },
-  { to: '/Kanbas/History', icon: FaClock, label: 'History' },
-  { to: '/Kanbas/Commons', icon: BsGoogle, label: 'Commons' },
-  { to: '/Kanbas/Studio', icon: MdOndemandVideo, label: 'Studio' },
-  { to: '/Kanbas/Help', icon: FaQuestion, label: 'Help' },
+  { to: '/Kanbas/Help', icon: FaQuestion, label: 'Help' }
 ];
 
 function KanbasNavigation() {
