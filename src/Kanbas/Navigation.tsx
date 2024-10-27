@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaUser, FaTachometerAlt, FaBook, FaCalendarAlt, FaInbox, FaClock, FaQuestion, FaFlask } from 'react-icons/fa';
+import { FaUser, FaTachometerAlt, FaBook, FaCalendarAlt, FaInbox, FaQuestion, FaFlask } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./style.css";
 
