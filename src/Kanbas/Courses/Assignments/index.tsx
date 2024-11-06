@@ -1,8 +1,56 @@
 import React from 'react';
-import { FaEllipsisV, FaCheckCircle, FaEdit, FaCaretDown, FaSearch } from 'react-icons/fa';
+import { FaEllipsisV, FaCheckCircle, FaEdit, FaCaretDown, FaSearch, FaTrash } from 'react-icons/fa';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { deleteAssignment } from './reducer';
 import "./style.css";
 
+interface Assignment {
+  _id: string;
+  name: string;
+  description: string;
+  points: number;
+  group: string;
+  gradeDisplay: string;
+  submissionType: string;
+  dueDate: string;
+  availableFrom: string;
+  availableUntil: string;
+  course: string; // Course ID associated with the assignment
+}
+
+interface Course {
+  _id: string;
+  name: string;
+  number: string;
+  startDate: string;
+  endDate: string;
+  department: string;
+  credits: number;
+  description: string;
+}
+
+interface AssignmentsProps {
+  course: Course; // Ensure to include course prop here
+}
+
+interface RootState {
+  assignments: {
+    assignments: Assignment[];
+  };
+}
+
 export default function Assignments() {
+  const assignments = useSelector((state: { assignments: { assignments: any[] } }) => state.assignments.assignments); 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleDelete = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this assignment?")) {
+      dispatch(deleteAssignment(id));
+    }
+  };
+
   return (
     <div className="wd-assignments">
       <div className="wd-assignments-header d-flex justify-content-between align-items-center mb-3">
@@ -15,8 +63,9 @@ export default function Assignments() {
           <FaSearch className="position-absolute top-50 end-0 translate-middle-y me-2 text-muted" />
         </div>
         <div className="wd-button-group">
-          <button id="wd-add-assignment-group" className="btn btn-outline-secondary me-2">+ Group</button>
-          <button id="wd-add-assignment" className="btn btn-danger">+ Assignment</button>
+          {/* Navigate to AssignmentEditor for creating a new assignment */}
+          <button onClick={() => navigate("/Kanbas/Assignments/Editor")} className="btn btn-danger me-2">+ Assignment</button>
+          <button id="wd-add-assignment-group" className="btn btn-outline-secondary">+ Group</button>
         </div>
       </div>
       <div className="wd-assignments-content border rounded">
@@ -26,35 +75,35 @@ export default function Assignments() {
             ASSIGNMENTS
             <FaCaretDown className="ms-2" />
           </h2>
-          <div>
-            <span className="wd-total-percentage badge bg-secondary me-2">40% of Total</span>
-            <button className="btn btn-outline-secondary btn-sm me-2">+</button>
-            <button className="btn btn-outline-secondary btn-sm"><FaEllipsisV /></button>
-          </div>
         </div>
         <ul id="wd-assignment-list" className="wd-assignments-list list-unstyled m-0">
-          {['A1', 'A2', 'A3'].map((assignment, index) => (
-            <li key={assignment} className="wd-assignment-item border-bottom p-2">
+          {assignments.map((assignment) => (
+            <li key={assignment._id} className="wd-assignment-item border-bottom p-2">
               <div className="d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center">
                   <FaEllipsisV className="me-2 text-muted" />
                   <FaEdit className="text-success me-2" />
                   <div className="wd-assignment-details">
-                    <a className="wd-assignment-name text-decoration-none text-dark fw-bold"
-                      href={`#/Kanbas/Courses/1234/Assignments/${index + 123}`}>
-                      {assignment}
-                    </a>
+                    {/* Navigate to AssignmentEditor with assignment ID for editing */}
+                    <Link
+                      className="wd-assignment-name text-decoration-none text-dark fw-bold"
+                      to={`/Kanbas/Assignments/Editor/${assignment._id}`}>
+                      {assignment.name}
+                    </Link>
                     <div className="text-muted small">
-                      <span className="text-danger">Multiple Modules</span> | Not available until {new Date(2023, 4, index + 6).toLocaleDateString()} at 12:00am |
+                      <span className="text-danger">Multiple Modules</span> | Not available until {new Date(assignment.availableFrom).toLocaleDateString()} at 12:00am |
                     </div>
                     <div className="text-muted small">
-                      Due {new Date(2023, 4, index + 13).toLocaleDateString()} at 11:59pm | 100 pts
+                      Due {new Date(assignment.dueDate).toLocaleDateString()} at 11:59pm | {assignment.points} pts
                     </div>
                   </div>
                 </div>
                 <div className="wd-assignment-actions d-flex align-items-center">
                   <FaCheckCircle className="text-success me-2" />
-                  <FaEllipsisV className="text-muted" />
+                  {/* Add delete button with confirmation */}
+                  <button onClick={() => handleDelete(assignment._id)} className="btn btn-link text-danger">
+                    <FaTrash />
+                  </button>
                 </div>
               </div>
             </li>

@@ -1,15 +1,5 @@
 import React from 'react';
-
-interface Course {
-  _id: string;
-  name: string;
-  number: string;
-  startDate: string;
-  endDate: string;
-  department: string;
-  credits: number;
-  description: string;
-}
+import { Course } from '../../Database/index';
 
 interface HomeProps {
   course: Course;

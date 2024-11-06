@@ -1,8 +1,18 @@
-import { FaPlus } from "react-icons/fa6";
-import { FaEye, FaCompress } from "react-icons/fa";
+import React from "react";
+import { FaPlus, FaEye, FaCompress } from "react-icons/fa";
 import GreenCheckmark from "./GreenCheckmark";
 
-export default function ModulesControls() {
+interface ModulesControlsProps {
+  moduleName: string;
+  setModuleName: (name: string) => void;
+  addModule: () => void;
+}
+
+export default function ModulesControls({
+  moduleName,
+  setModuleName,
+  addModule
+}: ModulesControlsProps) {
   return (
     <div id="wd-modules-controls" className="text-nowrap d-flex justify-content-between align-items-center">
       <div>
@@ -17,8 +27,12 @@ export default function ModulesControls() {
       </div>
       <div>
         <div className="dropdown d-inline me-2">
-          <button id="wd-publish-all-btn" className="btn btn-lg btn-secondary dropdown-toggle"
-            type="button" data-bs-toggle="dropdown">
+          <button 
+            id="wd-publish-all-btn" 
+            className="btn btn-lg btn-secondary dropdown-toggle"
+            type="button" 
+            data-bs-toggle="dropdown"
+          >
             <GreenCheckmark />
             Publish All
           </button>
@@ -47,7 +61,11 @@ export default function ModulesControls() {
             </li>
           </ul>
         </div>
-        <button id="wd-add-module-btn" className="btn btn-lg btn-danger">
+        <button 
+          id="wd-add-module-btn" 
+          className="btn btn-lg btn-danger"
+          onClick={addModule}
+        >
           <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
           Module
         </button>

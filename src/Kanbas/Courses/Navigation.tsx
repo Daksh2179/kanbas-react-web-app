@@ -3,14 +3,15 @@ import { Link, useLocation } from "react-router-dom";
 import './style.css';
 import { FaHome, FaNetworkWired, FaBook, FaVideo, FaClipboardList, FaQuestionCircle, FaGraduationCap, FaUsers } from "react-icons/fa";
 
+// Define the Course interface with the expected properties
 interface Course {
   _id: string;
   name: string;
-  number: string;
+  number: string; // Ensure this matches your course data structure
 }
 
 interface NavigationProps {
-  selectedCourse: Course;
+  selectedCourse: Course; // Accepts a Course type as a prop
 }
 
 function Navigation({ selectedCourse }: NavigationProps) {
@@ -40,7 +41,8 @@ function Navigation({ selectedCourse }: NavigationProps) {
               to={`/Kanbas/Courses/${selectedCourse._id}/${link.name}`}
               className="wd-kanbas-nav-link"
             >
-              <link.icon className="wd-kanbas-nav-icon" />
+              {/* Correctly render the icon */}
+              {React.createElement(link.icon, { className: "wd-kanbas-nav-icon" })}
               {link.name}
             </Link>
           </li>

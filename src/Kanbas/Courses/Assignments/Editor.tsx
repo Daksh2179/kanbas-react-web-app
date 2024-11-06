@@ -1,208 +1,298 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { FaCalendarAlt, FaCaretDown, FaTimes } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { FaCalendarAlt, FaTimes } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { addAssignment, updateAssignment } from './reducer';
+import { Course, assignments, Assignment, RootState } from '../../Database';
 import './style.css';
 
-// Define the Assignment type
-interface Assignment {
-  name: string;
-  description: string;
-  points: number;
-  group: string;
-  gradeDisplay: string;
-  submissionType: string;
-  dueDate: string;
-  availableFrom: string;
-  availableUntil: string;
-}
+const AssignmentEditor: React.FC = () => {
+  const { courseId, aid } = useParams<{ courseId: string; aid: string }>();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isEditMode = !!aid;
 
-// Define the assignments data structure
-const assignmentsData: Record<string, Assignment> = {
-  '123': {
-    name: 'A1',
-    description: `The assignment is available online. 
-    Submit a link to the landing page of your Web application running on Netlify. 
-    The landing page should include the following: 
-    - Your full name and section 
-    - Links to each of the lab assignments 
-    - Link to the Kanbas application 
-    - Links to all relevant source code repositories 
-    - The Kanbas application should include a link to navigate back to the landing page.`,
-    points: 100,
+  const course = useSelector((state: RootState) => 
+    state.courses.courses.find((c: Course) => c._id === courseId)
+  );
+
+  const [assignment, setAssignment] = useState<Assignment>({
+    id: '',
+    name: '',
+    description: '',
+    points: 0,
     group: 'ASSIGNMENTS',
     gradeDisplay: 'Percentage',
     submissionType: 'Online',
-    dueDate: 'May 13, 2024, 11:59 PM',
-    availableFrom: 'May 6, 2024, 12:00 AM',
-    availableUntil: 'May 13, 2024, 11:59 PM',
-  },
-  '124': {
-    name: 'A2',
-    description: `For this assignment, create a fully functional Kanban board. 
-    It should include the following features: 
-    - Add, edit, and delete tasks 
-    - Drag and drop functionality 
-    - Save the state of the board using local storage.`,
-    points: 100,
-    group: 'ASSIGNMENTS',
-    gradeDisplay: 'Percentage',
-    submissionType: 'Online',
-    dueDate: 'May 20, 2024, 11:59 PM',
-    availableFrom: 'May 13, 2024, 12:00 AM',
-    availableUntil: 'May 20, 2024, 11:59 PM',
-  },
-  '125': {
-    name: 'A3',
-    description: `This assignment requires you to deploy your Kanban board application 
-    on Netlify. Make sure to include the following: 
-    - Your application must be accessible publicly 
-    - Ensure that all functionality is working after deployment.`,
-    points: 100,
-    group: 'ASSIGNMENTS',
-    gradeDisplay: 'Percentage',
-    submissionType: 'Online',
-    dueDate: 'May 27, 2024, 11:59 PM',
-    availableFrom: 'May 20, 2024, 12:00 AM',
-    availableUntil: 'May 27, 2024, 11:59 PM',
-  },
-};
+    dueDate: '',
+    availableFrom: '',
+    availableUntil: '',
+    course: courseId || '',
+  });
 
-export default function AssignmentEditor() {
-  const { courseId, aid } = useParams<{ courseId: string, aid: string }>();
-  const assignment = aid ? assignmentsData[aid] : undefined;
+  const [validationErrors, setValidationErrors] = useState<{
+    name?: string;
+    dueDate?: string;
+    points?: string;
+    general?: string;
+  }>({});
 
-  if (!assignment) {
-    return <div>Assignment not found.</div>;
+  useEffect(() => {
+    if (isEditMode && aid) {
+      const existingAssignment = assignments.find((a) => a.id === aid);
+      if (existingAssignment) {
+        setAssignment(existingAssignment);
+      } else {
+        setValidationErrors((prev) => ({
+          ...prev,
+          general: 'Assignment not found',
+        }));
+      }
+    }
+  }, [aid, isEditMode]);
+
+  const validateForm = (): boolean => {
+    const errors: typeof validationErrors = {};
+
+    if (!assignment.name.trim()) {
+      errors.name = 'Assignment name is required';
+    }
+
+    if (!assignment.dueDate) {
+      errors.dueDate = 'Due date is required';
+    }
+
+    if (assignment.points < 0) {
+      errors.points = 'Points must be greater than or equal to 0';
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setAssignment((prev) => ({
+      ...prev,
+      [name]: name === 'points' ? Number(value) : value,
+    }));
+    
+    if (validationErrors[name as keyof typeof validationErrors]) {
+      setValidationErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
+    }
+  };
+
+  const handleSave = () => {
+    if (!validateForm()) {
+      return;
+    }
+    
+    try {
+      if (isEditMode) {
+        dispatch(updateAssignment(assignment));
+      } else {
+        dispatch(addAssignment({ ...assignment, id: crypto.randomUUID() }));
+      }
+      navigate(`/Kanbas/Courses/${courseId}/Assignments`);
+    } catch (error) {
+      setValidationErrors((prev) => ({
+        ...prev,
+        general: 'Failed to save assignment. Please try again.',
+      }));
+    }
+  };
+
+  if (!courseId) {
+    return (
+      <div className="wd-assignments">
+        <div className="alert alert-danger">
+          Course ID is required to create or edit an assignment
+        </div>
+      </div>
+    );
+  }
+
+  if (!course) {
+    return (
+      <div className="wd-assignments">
+        <div className="alert alert-danger">
+          Course not found
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div id="wd-assignments-editor" className="container mt-4">
-      <h2 className="mb-4">CS5610 SU1 24 MON/FRI {'>'} Assignments {'>'} {assignment.name}</h2>
-      <div className="row">
-        <div className="col-md-8">
-          <h3 className="text-danger mb-4">Assignment Name</h3>
-          <input id="wd-name" className="form-control mb-3" defaultValue={assignment.name} />
-          <textarea id="wd-description" className="form-control mb-3" rows={6} defaultValue={assignment.description} />
+    <div id="wd-assignments-editor" className="wd-assignments">
+      {validationErrors.general && (
+        <div className="alert alert-danger">{validationErrors.general}</div>
+      )}
+      
+      <div className="wd-assignments-header">
+        <h2>
+          {course.name} {'>'} Assignments {'>'} {assignment.name || 'New Assignment'}
+        </h2>
+        <div className="wd-button-group">
+          <Link 
+            to={`/Kanbas/Courses/${courseId}/Assignments`} 
+            className="btn btn-outline-secondary"
+          >
+            <FaTimes /> Cancel
+          </Link>
+        </div>
+      </div>
 
-          {/* Points */}
-          <div className="row mb-3">
-            <div className="col-md-3">
-              <label htmlFor="wd-points">Points</label>
-              <input id="wd-points" type="text" className="form-control" defaultValue={assignment.points} />
+      <div className="wd-assignments-content">
+        <div className="row">
+          <div className="col-md-8">
+            <div className="mb-3">
+              <label htmlFor="name" className="form-label">
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                className={`form-control wd-search-input ${validationErrors.name ? 'is-invalid' : ''}`}
+                value={assignment.name}
+                onChange={handleInputChange}
+                required
+              />
+              {validationErrors.name && (
+                <div className="invalid-feedback">{validationErrors.name}</div>
+              )}
             </div>
-          </div>
 
-          {/* Assignment Group */}
-          <div className="row mb-3">
-            <div className="col-md-6">
-              <label htmlFor="wd-assignment-group">Assignment Group</label>
-              <div className="input-group">
-                <select id="wd-assignment-group" className="form-select" defaultValue={assignment.group}>
-                  <option>{assignment.group}</option>
-                </select>
-                <span className="input-group-text"><FaCaretDown /></span>
-              </div>
+            <div className="mb-3">
+              <label htmlFor="description" className="form-label">
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                className="form-control"
+                rows={3}
+                value={assignment.description}
+                onChange={handleInputChange}
+              />
             </div>
-          </div>
 
-          {/* Display Grade as */}
-          <div className="row mb-3">
-            <div className="col-md-6">
-              <label htmlFor="wd-grade-display">Display Grade as</label>
-              <div className="input-group">
-                <select id="wd-grade-display" className="form-select" defaultValue={assignment.gradeDisplay}>
-                  <option>{assignment.gradeDisplay}</option>
-                </select>
-                <span className="input-group-text"><FaCaretDown /></span>
-              </div>
+            <div className="mb-3">
+              <label htmlFor="points" className="form-label">
+                Points
+              </label>
+              <input
+                type="number"
+                id="points"
+                name="points"
+                className={`form-control ${validationErrors.points ? 'is-invalid' : ''}`}
+                value={assignment.points}
+                onChange={handleInputChange}
+                min="0"
+                required
+              />
+              {validationErrors.points && (
+                <div className="invalid-feedback">{validationErrors.points}</div>
+              )}
             </div>
-          </div>
 
-          {/* Submission Type */}
-          <div className="row mb-3">
-            <div className="col-md-6">
-              <label htmlFor="wd-submission-type">Submission Type</label>
-              <div className="input-group">
-                <select id="wd-submission-type" className="form-select" defaultValue={assignment.submissionType}>
-                  <option>{assignment.submissionType}</option>
-                </select>
-                <span className="input-group-text"><FaCaretDown /></span>
-              </div>
+            <div className="mb-3">
+              <label htmlFor="dueDate" className="form-label">
+                Due Date <FaCalendarAlt className="wd-search-icon" />
+              </label>
+              <input
+                type="datetime-local"
+                id="dueDate"
+                name="dueDate"
+                className={`form-control ${validationErrors.dueDate ? 'is-invalid' : ''}`}
+                value={assignment.dueDate}
+                onChange={handleInputChange}
+                required
+              />
+              {validationErrors.dueDate && (
+                <div className="invalid-feedback">{validationErrors.dueDate}</div>
+              )}
             </div>
-          </div>
 
-          {/* Online Entry Options */}
-          <div className="mb-3">
-            <h4>Online Entry Options</h4>
-            <div className="form-check">
-              <input type="checkbox" className="form-check-input" id="wd-text-entry" />
-              <label className="form-check-label" htmlFor="wd-text-entry">Text Entry</label>
+            <div className="mb-3">
+              <label htmlFor="availableFrom" className="form-label">
+                Available From <FaCalendarAlt className="wd-search-icon" />
+              </label>
+              <input
+                type="datetime-local"
+                id="availableFrom"
+                name="availableFrom"
+                className="form-control"
+                value={assignment.availableFrom}
+                onChange={handleInputChange}
+              />
             </div>
-            <div className="form-check">
-              <input type="checkbox" className="form-check-input" id="wd-website-url" checked />
-              <label className="form-check-label" htmlFor="wd-website-url">Website URL</label>
-            </div>
-            <div className="form-check">
-              <input type="checkbox" className="form-check-input" id="wd-media-recordings" />
-              <label className="form-check-label" htmlFor="wd-media-recordings">Media Recordings</label>
-            </div>
-            <div className="form-check">
-              <input type="checkbox" className="form-check-input" id="wd-student-annotation" />
-              <label className="form-check-label" htmlFor="wd-student-annotation">Student Annotation</label>
-            </div>
-            <div className="form-check">
-              <input type="checkbox" className="form-check-input" id="wd-file-uploads" />
-              <label className="form-check-label" htmlFor="wd-file-uploads">File Uploads</label>
-            </div>
-          </div>
 
-          {/* Assign */}
-          <div className="mb-4">
-            <h4>Assign</h4>
-            <div className="border rounded p-3">
-              <div className="mb-3">
-                <label htmlFor="wd-assign-to">Assign to</label>
-                <div className="d-flex align-items-center">
-                  <input id="wd-assign-to" type="text" className="form-control" defaultValue="Everyone" readOnly />
-                  <FaTimes className="ms-2 text-muted" />
-                </div>
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="wd-due-date">Due</label>
-                <div className="input-group">
-                  <input id="wd-due-date" type="text" className="form-control" defaultValue={assignment.dueDate} />
-                  <span className="input-group-text"><FaCalendarAlt /></span>
-                </div>
-              </div>
-
-              <div className="row">
-                <div className="col-md-6 mb-3">
-                  <label htmlFor="wd-available-from">Available from</label>
-                  <div className="input-group">
-                    <input id="wd-available-from" type="text" className="form-control" defaultValue={assignment.availableFrom} />
-                    <span className="input-group-text"><FaCalendarAlt /></span>
-                  </div>
-                </div>
-
-                <div className="col-md-6 mb-3">
-                  <label htmlFor="wd-until">Until</label>
-                  <div className="input-group">
-                    <input id="wd-until" type="text" className="form-control" defaultValue={assignment.availableUntil} />
-                    <span className="input-group-text"><FaCalendarAlt /></span>
-                  </div>
-                </div>
-              </div>
+            <div className="mb-3">
+              <label htmlFor="availableUntil" className="form-label">
+                Available Until <FaCalendarAlt className="wd-search-icon" />
+              </label>
+              <input
+                type="datetime-local"
+                id="availableUntil"
+                name="availableUntil"
+                className="form-control"
+                value={assignment.availableUntil}
+                onChange={handleInputChange}
+              />
             </div>
-          </div>
 
-          {/* Cancel and Save buttons */}
-          <div className="mt-4">
-            <Link to={`/Kanbas/Courses/${courseId}/Assignments`} className="btn btn-light me-2">Cancel</Link>
-            <Link to={`/Kanbas/Courses/${courseId}/Assignments`} className="btn btn-danger">Save</Link>
+            <div className="mb-3">
+              <label htmlFor="group" className="form-label">
+                Assignment Group
+              </label>
+              <select
+                id="group"
+                name="group"
+                className="form-control"
+                value={assignment.group}
+                onChange={handleInputChange}
+              >
+                <option value="ASSIGNMENTS">Assignments</option>
+                <option value="QUIZZES">Quizzes</option>
+                <option value="EXAMS">Exams</option>
+                <option value="PROJECTS">Projects</option>
+              </select>
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="submissionType" className="form-label">
+                Submission Type
+              </label>
+              <select
+                id="submissionType"
+                name="submissionType"
+                className="form-control"
+                value={assignment.submissionType}
+                onChange={handleInputChange}
+              >
+                <option value="Online">Online</option>
+                <option value="Paper">Paper</option>
+                <option value="External">External Tool</option>
+              </select>
+            </div>
+
+            <button 
+              className="btn btn-danger"
+              onClick={handleSave}
+            >
+              {isEditMode ? 'Update Assignment' : 'Create Assignment'}
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default AssignmentEditor;
