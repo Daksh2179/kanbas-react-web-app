@@ -1,115 +1,121 @@
 import React from 'react';
-import { FaEllipsisV, FaCheckCircle, FaEdit, FaCaretDown, FaSearch, FaTrash } from 'react-icons/fa';
+import * as db from "../../Database";
+import { useParams } from "react-router";
+import { LuFileEdit } from "react-icons/lu";
+import { BsGripVertical } from "react-icons/bs";
+import { FaSearch, FaEllipsisV, FaCheckCircle, FaGripVertical, FaFileAlt, FaPlus, FaTrash } from 'react-icons/fa';
+import { IoEllipsisVertical } from 'react-icons/io5';
+import GreenCheckmark from '../Modules/GreenCheckmark';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { deleteAssignment } from './reducer';
-import "./style.css";
+import { Link } from 'react-router-dom';
+import { removeAssignment } from './reducer';
+import { BiSearch } from "react-icons/bi";
 
-interface Assignment {
-  _id: string;
-  name: string;
-  description: string;
-  points: number;
-  group: string;
-  gradeDisplay: string;
-  submissionType: string;
-  dueDate: string;
-  availableFrom: string;
-  availableUntil: string;
-  course: string; // Course ID associated with the assignment
-}
-
-interface Course {
-  _id: string;
-  name: string;
-  number: string;
-  startDate: string;
-  endDate: string;
-  department: string;
-  credits: number;
-  description: string;
-}
-
-interface AssignmentsProps {
-  course: Course; // Ensure to include course prop here
-}
-
-interface RootState {
-  assignments: {
-    assignments: Assignment[];
-  };
-}
-
-export default function Assignments() {
-  const assignments = useSelector((state: { assignments: { assignments: any[] } }) => state.assignments.assignments); 
+function Assignments() {
+  const { cid } = useParams();
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const handleDelete = (id: string) => {
-    if (window.confirm("Are you sure you want to delete this assignment?")) {
-      dispatch(deleteAssignment(id));
-    }
-  };
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   return (
-    <div className="wd-assignments">
-      <div className="wd-assignments-header d-flex justify-content-between align-items-center mb-3">
-        <div className="wd-search-group position-relative">
+    <div id="wd-assignments" className="container">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <div className="input-group me-2 w-50">
+          <span className="input-group-text">
+            <BiSearch />
+          </span>
           <input
             id="wd-search-assignment"
-            className="form-control wd-search-input"
+            className="form-control"
             placeholder="Search for Assignments"
           />
-          <FaSearch className="position-absolute top-50 end-0 translate-middle-y me-2 text-muted" />
         </div>
-        <div className="wd-button-group">
-          {/* Navigate to AssignmentEditor for creating a new assignment */}
-          <button onClick={() => navigate("/Kanbas/Assignments/Editor")} className="btn btn-danger me-2">+ Assignment</button>
-          <button id="wd-add-assignment-group" className="btn btn-outline-secondary">+ Group</button>
+        <div className="d-flex">
+          <button
+            id="wd-add-assignment-group"
+            className="btn btn-secondary me-2"
+          >
+            + Group
+          </button>
+          {currentUser.role === "FACULTY" && (
+            <Link
+              id="wd-add-assignment"
+              className="btn btn-danger"
+              to={`/Kanbas/Courses/${cid}/Assignments/create`}
+            >
+              + Assignment
+            </Link>
+          )}
         </div>
       </div>
-      <div className="wd-assignments-content border rounded">
-        <div className="wd-assignments-title d-flex justify-content-between align-items-center p-2 bg-light border-bottom">
-          <h2 id="wd-assignments-title" className="d-flex align-items-center mb-0 fs-5">
-            <FaEllipsisV className="me-2" />
+
+      <div className="d-flex align-items-center justify-content-between bg-secondary p-3 ps-1 border border-dark">
+        <div className="d-flex align-items-center">
+          <BsGripVertical className="me-2 fs-3" />
+          <h3 id="wd-assignments-title" className="fs-4 m-0">
             ASSIGNMENTS
-            <FaCaretDown className="ms-2" />
-          </h2>
+          </h3>
         </div>
-        <ul id="wd-assignment-list" className="wd-assignments-list list-unstyled m-0">
-          {assignments.map((assignment) => (
-            <li key={assignment._id} className="wd-assignment-item border-bottom p-2">
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="d-flex align-items-center">
-                  <FaEllipsisV className="me-2 text-muted" />
-                  <FaEdit className="text-success me-2" />
-                  <div className="wd-assignment-details">
-                    {/* Navigate to AssignmentEditor with assignment ID for editing */}
-                    <Link
-                      className="wd-assignment-name text-decoration-none text-dark fw-bold"
-                      to={`/Kanbas/Assignments/Editor/${assignment._id}`}>
-                      {assignment.name}
-                    </Link>
-                    <div className="text-muted small">
-                      <span className="text-danger">Multiple Modules</span> | Not available until {new Date(assignment.availableFrom).toLocaleDateString()} at 12:00am |
-                    </div>
-                    <div className="text-muted small">
-                      Due {new Date(assignment.dueDate).toLocaleDateString()} at 11:59pm | {assignment.points} pts
-                    </div>
-                  </div>
+
+        <div className="d-flex align-items-center">
+          <button className="btn btn-secondary rounded-pill border border-dark me-2">
+            40% of Total
+          </button>
+          <button className="border-0 me-2 bg-transparent">
+            <FaPlus className="fs-4" />
+          </button>
+          <button className="border-0 bg-transparent">
+            <IoEllipsisVertical className="fs-4" />
+          </button>
+        </div>
+      </div>
+
+      <ul id="wd-assignment-list" className="list-group rounded-0">
+        {assignments
+          .filter((assignment: any) => assignment.course === cid)
+          .map((assignment: any) => (
+            <li
+              key={assignment._id}
+              className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex justify-content-between align-items-center"
+            >
+              <div className="d-flex align-items-center">
+                <BsGripVertical className="me-2 fs-3" />
+                <LuFileEdit className="me-2 fs-3 text-success" />
+                <div>
+                  {currentUser.role === "FACULTY" ? (
+                    <a
+                      className="wd-assignment-link"
+                      href={`#/Kanbas/Courses/${assignment.course}/Assignments/${assignment._id}`}
+                    >
+                      {`${assignment._id} - ${assignment.title}`}
+                    </a>
+                  ) : (
+                    <span className="wd-assignment-link">
+                      {`${assignment._id} - ${assignment.title}`}
+                    </span>
+                  )}
+                  <br />
+                  Multiple Modules | <b>Not available</b> until{" "}
+                  {assignment["available-from"]} at 12:00am | <b>Due</b>{" "}
+                  {assignment["due-date"]} at 11:59pm | {assignment.points} pts
                 </div>
-                <div className="wd-assignment-actions d-flex align-items-center">
-                  <FaCheckCircle className="text-success me-2" />
-                  {/* Add delete button with confirmation */}
-                  <button onClick={() => handleDelete(assignment._id)} className="btn btn-link text-danger">
-                    <FaTrash />
-                  </button>
-                </div>
+              </div>
+              <div className="float-end d-flex align-items-center">
+                {currentUser.role === "FACULTY" && (
+                  <FaTrash
+                    className="text-danger me-2 mb-1"
+                    onClick={() => dispatch(removeAssignment(assignment._id))}
+                  />
+                )}
+                <GreenCheckmark />
+                <IoEllipsisVertical className="fs-4" />
               </div>
             </li>
           ))}
-        </ul>
-      </div>
+      </ul>
     </div>
   );
 }
+
+export default Assignments;

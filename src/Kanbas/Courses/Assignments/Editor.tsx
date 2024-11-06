@@ -1,298 +1,223 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FaCalendarAlt, FaTimes } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaTimes, FaCalendarAlt } from 'react-icons/fa';
+import { useNavigate, useParams } from "react-router";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { addAssignment, updateAssignment } from './reducer';
-import { Course, assignments, Assignment, RootState } from '../../Database';
-import './style.css';
+import { createAssignment, updateAssignment } from './reducer';
 
-const AssignmentEditor: React.FC = () => {
-  const { courseId, aid } = useParams<{ courseId: string; aid: string }>();
-  const dispatch = useDispatch();
+function AssignmentEditor() {
+  const { aid, cid } = useParams();
   const navigate = useNavigate();
-  const isEditMode = !!aid;
 
-  const course = useSelector((state: RootState) => 
-    state.courses.courses.find((c: Course) => c._id === courseId)
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const dispatch = useDispatch();
+
+  const foundAssignment = assignments.find((a: any) => a._id === aid);
+
+  const [assignment, setAssignment] = useState(
+    foundAssignment
+      ? foundAssignment
+      : {
+          title: "",
+          course: cid,
+          description: "",
+          points: 0,
+          "due-date": "",
+          "available-from": "",
+          "available-until": "",
+        }
   );
 
-  const [assignment, setAssignment] = useState<Assignment>({
-    id: '',
-    name: '',
-    description: '',
-    points: 0,
-    group: 'ASSIGNMENTS',
-    gradeDisplay: 'Percentage',
-    submissionType: 'Online',
-    dueDate: '',
-    availableFrom: '',
-    availableUntil: '',
-    course: courseId || '',
-  });
-
-  const [validationErrors, setValidationErrors] = useState<{
-    name?: string;
-    dueDate?: string;
-    points?: string;
-    general?: string;
-  }>({});
-
-  useEffect(() => {
-    if (isEditMode && aid) {
-      const existingAssignment = assignments.find((a) => a.id === aid);
-      if (existingAssignment) {
-        setAssignment(existingAssignment);
+  const onSave = () => {
+      if (aid === "create") {
+        dispatch(createAssignment(assignment));
       } else {
-        setValidationErrors((prev) => ({
-          ...prev,
-          general: 'Assignment not found',
-        }));
-      }
-    }
-  }, [aid, isEditMode]);
-
-  const validateForm = (): boolean => {
-    const errors: typeof validationErrors = {};
-
-    if (!assignment.name.trim()) {
-      errors.name = 'Assignment name is required';
-    }
-
-    if (!assignment.dueDate) {
-      errors.dueDate = 'Due date is required';
-    }
-
-    if (assignment.points < 0) {
-      errors.points = 'Points must be greater than or equal to 0';
-    }
-
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setAssignment((prev) => ({
-      ...prev,
-      [name]: name === 'points' ? Number(value) : value,
-    }));
-    
-    if (validationErrors[name as keyof typeof validationErrors]) {
-      setValidationErrors((prev) => ({
-        ...prev,
-        [name]: undefined,
-      }));
-    }
-  };
-
-  const handleSave = () => {
-    if (!validateForm()) {
-      return;
-    }
-    
-    try {
-      if (isEditMode) {
         dispatch(updateAssignment(assignment));
-      } else {
-        dispatch(addAssignment({ ...assignment, id: crypto.randomUUID() }));
       }
-      navigate(`/Kanbas/Courses/${courseId}/Assignments`);
-    } catch (error) {
-      setValidationErrors((prev) => ({
-        ...prev,
-        general: 'Failed to save assignment. Please try again.',
-      }));
-    }
+      navigate(`/Kanbas/Courses/${cid}/Assignments`);
+  
   };
 
-  if (!courseId) {
-    return (
-      <div className="wd-assignments">
-        <div className="alert alert-danger">
-          Course ID is required to create or edit an assignment
-        </div>
-      </div>
-    );
-  }
-
-  if (!course) {
-    return (
-      <div className="wd-assignments">
-        <div className="alert alert-danger">
-          Course not found
-        </div>
-      </div>
-    );
-  }
-
+  if (!assignment && aid !== "create") return <div>Assignment Not Found</div>;
   return (
-    <div id="wd-assignments-editor" className="wd-assignments">
-      {validationErrors.general && (
-        <div className="alert alert-danger">{validationErrors.general}</div>
-      )}
-      
-      <div className="wd-assignments-header">
-        <h2>
-          {course.name} {'>'} Assignments {'>'} {assignment.name || 'New Assignment'}
-        </h2>
-        <div className="wd-button-group">
-          <Link 
-            to={`/Kanbas/Courses/${courseId}/Assignments`} 
-            className="btn btn-outline-secondary"
-          >
-            <FaTimes /> Cancel
-          </Link>
+    <div id="wd-assignments-editor" className="container">
+      <label htmlFor="wd-name">Assignment Name</label>
+      <input
+        required
+        id="wd-name"
+        value={assignment.title}
+        onChange={(e) =>
+          setAssignment({ ...assignment, title: e.target.value })
+        }
+        className="form-control mt-2"
+      />
+
+      <textarea
+        required
+        id="wd-description"
+        cols={60}
+        rows={5}
+        className="form-control mt-4"
+        onChange={(e) =>
+          setAssignment({ ...assignment, description: e.target.value })
+        }
+      >
+        {assignment.description}
+      </textarea>
+      <br />
+
+      <div className="mb-3 row">
+        <label htmlFor="email1" className="col-sm-2 col-form-label text-end">
+          Email
+        </label>
+        <div className="col-sm-10">
+          <input
+            type="text"
+            className="form-control"
+            id="email1"
+            value="email@example.com"
+          />
         </div>
       </div>
 
-      <div className="wd-assignments-content">
-        <div className="row">
-          <div className="col-md-8">
-            <div className="mb-3">
-              <label htmlFor="name" className="form-label">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                className={`form-control wd-search-input ${validationErrors.name ? 'is-invalid' : ''}`}
-                value={assignment.name}
-                onChange={handleInputChange}
-                required
-              />
-              {validationErrors.name && (
-                <div className="invalid-feedback">{validationErrors.name}</div>
-              )}
-            </div>
+      <div className="mb-3 row">
+        <label htmlFor="wd-points" className="col-sm-2 col-form-label text-end">
+          Points
+        </label>
+        <div className="col-sm-10">
+          <input
+            required
+            id="wd-points"
+            value={assignment.points}
+            className="form-control"
+            onChange={(e) =>
+              setAssignment({ ...assignment, points: e.target.value })
+            }
+          />
+        </div>
+      </div>
 
-            <div className="mb-3">
-              <label htmlFor="description" className="form-label">
-                Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                className="form-control"
-                rows={3}
-                value={assignment.description}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="points" className="form-label">
-                Points
-              </label>
-              <input
-                type="number"
-                id="points"
-                name="points"
-                className={`form-control ${validationErrors.points ? 'is-invalid' : ''}`}
-                value={assignment.points}
-                onChange={handleInputChange}
-                min="0"
-                required
-              />
-              {validationErrors.points && (
-                <div className="invalid-feedback">{validationErrors.points}</div>
-              )}
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="dueDate" className="form-label">
-                Due Date <FaCalendarAlt className="wd-search-icon" />
-              </label>
-              <input
-                type="datetime-local"
-                id="dueDate"
-                name="dueDate"
-                className={`form-control ${validationErrors.dueDate ? 'is-invalid' : ''}`}
-                value={assignment.dueDate}
-                onChange={handleInputChange}
-                required
-              />
-              {validationErrors.dueDate && (
-                <div className="invalid-feedback">{validationErrors.dueDate}</div>
-              )}
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="availableFrom" className="form-label">
-                Available From <FaCalendarAlt className="wd-search-icon" />
-              </label>
-              <input
-                type="datetime-local"
-                id="availableFrom"
-                name="availableFrom"
-                className="form-control"
-                value={assignment.availableFrom}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="availableUntil" className="form-label">
-                Available Until <FaCalendarAlt className="wd-search-icon" />
-              </label>
-              <input
-                type="datetime-local"
-                id="availableUntil"
-                name="availableUntil"
-                className="form-control"
-                value={assignment.availableUntil}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="group" className="form-label">
-                Assignment Group
-              </label>
-              <select
-                id="group"
-                name="group"
-                className="form-control"
-                value={assignment.group}
-                onChange={handleInputChange}
-              >
-                <option value="ASSIGNMENTS">Assignments</option>
-                <option value="QUIZZES">Quizzes</option>
-                <option value="EXAMS">Exams</option>
-                <option value="PROJECTS">Projects</option>
-              </select>
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="submissionType" className="form-label">
-                Submission Type
-              </label>
-              <select
-                id="submissionType"
-                name="submissionType"
-                className="form-control"
-                value={assignment.submissionType}
-                onChange={handleInputChange}
-              >
-                <option value="Online">Online</option>
-                <option value="Paper">Paper</option>
-                <option value="External">External Tool</option>
-              </select>
-            </div>
-
-            <button 
-              className="btn btn-danger"
-              onClick={handleSave}
-            >
-              {isEditMode ? 'Update Assignment' : 'Create Assignment'}
-            </button>
+      
+      <div className="form-group">
+        <label htmlFor="wd-points">Points</label>
+        <input id="wd-points" value="100" className="form-control" />
+      </div>
+      <br/>
+      <div className="form-group">
+        <label htmlFor="wd-group">Assignment Group</label>
+        <select id="wd-group" className="form-control">
+          <option>ASSIGNMENTS</option>
+          <option>QUIZZES</option>
+          <option>EXAMS</option>
+          <option>PROJECTS</option>
+        </select>
+      </div>
+      <br/>
+      <div className="form-group">
+        <label htmlFor="wd-display-grade-as">Display Grade as</label>
+        <select id="wd-display-grade-as" className="form-control">
+          <option>Percentage</option>
+          <option>Pts</option>
+          <option>Grades</option>
+        </select>
+      </div>
+      <br/>
+      <div className="form-group">
+        <label>Submission Type</label>
+        <div className="assign-content">
+        <select className="form-control">
+          <option>Online</option>
+          <option>In-Person</option>
+        </select><br/>
+        <div >
+        <div className="assign-to">
+          <p >Online Entry Options</p>
+          </div>
+          <div className="checkbox">
+            <label><input type="checkbox" /> Text Entry</label>
+          </div>
+          <div className="checkbox">
+            <label><input type="checkbox" checked /> Website URL</label>
+          </div>
+          <div className="checkbox">
+            <label><input type="checkbox" /> Media Recordings</label>
+          </div>
+          <div className="checkbox">
+            <label><input type="checkbox" /> Student Annotation</label>
+          </div>
+          <div className="checkbox">
+            <label><input type="checkbox" /> File Uploads</label>
           </div>
         </div>
       </div>
+      </div>
+      <br/>
+      
+        <label>Assign</label>
+        <div className="assign-content">
+          <div className="assign-to">
+            <p>Assign to</p>
+            <div className="form-group">
+        <select id="wd-group" className="form-control">
+          <option>Everyone</option>
+          <option>Individual</option>
+        </select>
+      </div>
+      <br/> 
+          </div>
+          <div className="due-date">
+            <p>Due</p>
+            <div className="date-input">
+              <input type="text" value="June 12, 2024, 11:59 PM" className="form-control" />
+              <FaCalendarAlt className="calendar-icon" />
+            </div>
+          </div>
+          <div className="availability">
+            <div className="available-from">
+              <p>Available from</p>
+              <div className="date-input">
+                <input type="text" value="June 8, 2024, 12:00 AM" className="form-control" />
+                <FaCalendarAlt className="calendar-icon" />
+              </div>
+            </div>
+            <div className="until">
+              <p>Until</p>
+              <div className="date-input">
+                <input type="text" value="June 13, 2024, 12:00 AM" className="form-control" />
+                <FaCalendarAlt className="calendar-icon" />
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <br/>
+        <div className="button-group">
+        <div className="float-end">
+        <Link to={`/Kanbas/Courses/${cid}/Assignments`}>
+          <button
+            id="wd-cancel-btn"
+            type="button"
+            className="btn btn-light border border-gray me-3"
+          >
+            Cancel
+          </button>
+        </Link>
+          <button
+            id="wd-save-btn"
+            type="button"
+            className="btn btn-danger px-4"
+            onClick={()=>onSave()}
+          >
+            Save
+          </button>
+      </div>
     </div>
+      </div>
+   
+      
+      
+     
   );
-};
+}
 
 export default AssignmentEditor;
