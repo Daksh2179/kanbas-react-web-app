@@ -1,29 +1,39 @@
-import React from 'react';
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { RootState } from "../store";
+
 export default function AccountNavigation() {
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const links = currentUser ? ["Profile"] : ["Signin", "Signup"];
-  
+  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+
   return (
-    <div id="wd-account-navigation" className="wd list-group fs-5 rounded-0">
-    <Link 
-      to="/Kanbas/Account/Signin" 
-      className="list-group-item active border border-0"
-    >
-      <span className="wd-kanbas-nav-link">Signin</span>
-    </Link>
-    <Link 
-      to="/Kanbas/Account/Signup" 
-      className="list-group-item text-danger border border-0"
-    >
-      <span className="wd-kanbas-nav-link">Signup</span>
-    </Link>
-    <Link 
-      to="/Kanbas/Account/Profile" 
-      className="list-group-item text-danger border border-0"
-    >
-      <span className="wd-kanbas-nav-link">Profile</span>
-    </Link>
-  </div>
-);}
+    <div id="wd-account-navigation">
+      <nav className="nav flex-column">
+        <Link to="/Kanbas/Account/Signin" className="nav-link">
+          Sign In
+        </Link>
+        {!currentUser && (
+          <Link to="/Kanbas/Account/Signup" className="nav-link">
+            Sign Up
+          </Link>
+        )}
+        {currentUser && (
+          <>
+            <Link to="/Kanbas/Account/Profile" className="nav-link">
+              Profile
+            </Link>
+            <button
+              onClick={() => {
+                // Sign out logic: clear the current user in the state and navigate to sign-in page
+                localStorage.removeItem("user"); // Assuming you save user data in localStorage or Redux
+                window.location.href = "/Kanbas/Account/Signin";
+              }}
+              className="nav-link btn btn-link"
+            >
+              Sign Out
+            </button>
+          </>
+        )}
+      </nav>
+    </div>
+  );
+}
