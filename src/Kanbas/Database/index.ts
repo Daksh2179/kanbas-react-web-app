@@ -58,7 +58,7 @@ export interface Course {
 export const modules = modulesData;
 export const enrollment = enrollmentData as Enrollment[];
 export const user = userData as User[];
-export const assignments = assignmentData as Assignment[];
+export const assignments = assignmentData as unknown as Assignment[];
 export const Course = coursesData;
 
 // Type guard to check if a role is valid
