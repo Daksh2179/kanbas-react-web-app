@@ -1,22 +1,25 @@
-import React from 'react';
-import * as db from "../../Database";
+import React, { useMemo } from 'react';
 import { useParams } from "react-router";
 import { LuFileEdit } from "react-icons/lu";
 import { BsGripVertical } from "react-icons/bs";
-import { FaSearch, FaEllipsisV, FaCheckCircle, FaGripVertical, FaFileAlt, FaPlus, FaTrash } from 'react-icons/fa';
+import { FaPlus, FaTrash } from 'react-icons/fa';
 import { IoEllipsisVertical } from 'react-icons/io5';
-import GreenCheckmark from '../Modules/GreenCheckmark';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { removeAssignment } from './reducer';
 import { BiSearch } from "react-icons/bi";
+import GreenCheckmark from '../Modules/GreenCheckmark';
+import { Assignment } from '../../Database/index';
 
 function Assignments() {
   const { cid } = useParams();
-  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const { assignments } = useSelector((state: { assignmentsReducer: { assignments: Assignment[] } }) => state.assignmentsReducer);
   const dispatch = useDispatch();
+  const { currentUser } = useSelector((state: { accountReducer: { currentUser: { role: string } } }) => state.accountReducer);
 
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const filteredAssignments = useMemo(() => {
+    return assignments.filter((assignment) => assignment.course === cid);
+  }, [assignments, cid]);
 
   return (
     <div id="wd-assignments" className="container">
@@ -38,7 +41,7 @@ function Assignments() {
           >
             + Group
           </button>
-          {currentUser.role === "FACULTY" && (
+          {currentUser?.role === "FACULTY" && (
             <Link
               id="wd-add-assignment"
               className="btn btn-danger"
@@ -66,53 +69,51 @@ function Assignments() {
             <FaPlus className="fs-4" />
           </button>
           <button className="border-0 bg-transparent">
-            <IoEllipsisVertical className="fs-4" />
+            <IoEllipsisVertical aria-label="More options" className="fs-4" />
           </button>
         </div>
       </div>
 
       <ul id="wd-assignment-list" className="list-group rounded-0">
-        {assignments
-          .filter((assignment: any) => assignment.course === cid)
-          .map((assignment: any) => (
-            <li
-              key={assignment._id}
-              className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex justify-content-between align-items-center"
-            >
-              <div className="d-flex align-items-center">
-                <BsGripVertical className="me-2 fs-3" />
-                <LuFileEdit className="me-2 fs-3 text-success" />
-                <div>
-                  {currentUser.role === "FACULTY" ? (
-                    <a
-                      className="wd-assignment-link"
-                      href={`#/Kanbas/Courses/${assignment.course}/Assignments/${assignment._id}`}
-                    >
-                      {`${assignment._id} - ${assignment.title}`}
-                    </a>
-                  ) : (
-                    <span className="wd-assignment-link">
-                      {`${assignment._id} - ${assignment.title}`}
-                    </span>
-                  )}
-                  <br />
-                  Multiple Modules | <b>Not available</b> until{" "}
-                  {assignment["available-from"]} at 12:00am | <b>Due</b>{" "}
-                  {assignment["due-date"]} at 11:59pm | {assignment.points} pts
-                </div>
-              </div>
-              <div className="float-end d-flex align-items-center">
-                {currentUser.role === "FACULTY" && (
-                  <FaTrash
-                    className="text-danger me-2 mb-1"
-                    onClick={() => dispatch(removeAssignment(assignment._id))}
-                  />
+        {filteredAssignments.map((assignment) => (
+          <li
+            key={assignment.id}
+            className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex justify-content-between align-items-center"
+          >
+            <div className="d-flex align-items-center">
+              <BsGripVertical className="me-2 fs-3" />
+              <LuFileEdit className="me-2 fs-3 text-success" />
+              <div>
+                {currentUser.role === "FACULTY" ? (
+                  <a
+                    className="wd-assignment-link"
+                    href={`#/Kanbas/Courses/${assignment.course}/Assignments/${assignment.id}`}
+                  >
+                    {`${assignment.id} - ${assignment.name}`}
+                  </a>
+                ) : (
+                  <span className="wd-assignment-link">
+                    {`${assignment.id} - ${assignment.name}`}
+                  </span>
                 )}
-                <GreenCheckmark />
-                <IoEllipsisVertical className="fs-4" />
+                <br />
+                Multiple Modules | <b>Not available</b> until{" "}
+                {assignment.availableFrom} at 12:00am | <b>Due</b>{" "}
+                {assignment.dueDate} at 11:59pm | {assignment.points} pts
               </div>
-            </li>
-          ))}
+            </div>
+            <div className="float-end d-flex align-items-center">
+              {currentUser.role === "FACULTY" && (
+                <FaTrash
+                  className="text-danger me-2 mb-1"
+                  onClick={() => dispatch(removeAssignment(assignment.id))}
+                />
+              )}
+              <GreenCheckmark />
+              <IoEllipsisVertical aria-label="More options" className="fs-4" />
+            </div>
+          </li>
+        ))}
       </ul>
     </div>
   );

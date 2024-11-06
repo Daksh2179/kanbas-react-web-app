@@ -1,16 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 import modulesReducer from "./Courses/Modules/reducer";
 import accountReducer from "./Account/reducer";
-import assignmentReducer from "./Courses/Assignments/reducer";
+import assignmentsReducer from "./Courses/Assignments/reducer";
 import enrollmentsReducer from "./Courses/Home/reducer";
 
 const store = configureStore({
   reducer: {
     modulesReducer,
     accountReducer,
-    assignmentReducer,
+    assignmentsReducer,
     enrollmentsReducer,
   },
 });
+
+export type RootState = ReturnType<typeof store.getState>;
 
 export default store;
