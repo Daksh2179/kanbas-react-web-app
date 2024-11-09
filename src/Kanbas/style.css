@@ -1,180 +1,53 @@
-/* Global Styles */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-/* Kanbas Navigation Styles */
-.wd-kanbas-navigation {
-  width: 84px;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 1030;
-  background-color: black;
-  display: flex;
-  flex-direction: column;
-}
-
-.wd-kanbas-navigation a {
-  width: 100%;
-  padding: 8px 0;
-  text-decoration: none;
-}
-
-.wd-kanbas-navigation a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.wd-kanbas-navigation a.active,
-.wd-kanbas-nav-item.active {
-  background-color: white;
-}
-
-.wd-kanbas-navigation .icon,
-.wd-kanbas-nav-icon {
-  font-size: 1.25rem;
-  margin-bottom: 2px;
-}
-
-.wd-kanbas-navigation .label {
-  font-size: 0.65rem;
-  white-space: nowrap;
-}
-
-.wd-kanbas-nav-item.active .wd-kanbas-nav-link,
-.wd-kanbas-nav-item.active .wd-kanbas-nav-icon {
-  color: red;
-}
-
-/* Dashboard Styles */
-#wd-dashboard {
-  padding: 10px;
-  padding-left: 10px;
-}
-
-.wd-dashboard-course {
-  width: 100%;
-  max-width: 260px;
-  margin-bottom: 20px;
-}
-
-/* Card Styles */
-.card {
-  height: 100%;
-}
-
-.card-img-top {
-  height: 150px;
-  object-fit: cover;
-}
-
-.card-body {
-  display: flex;
-  flex-direction: column;
-}
-
-.card-title {
-  font-size: 1rem;
-}
-
-.card-text {
-  font-size: 0.9rem;
-  flex-grow: 1;
-}
-
-.card .btn {
-  align-self: flex-start;
-  margin-top: auto;
-}
-
-/* Responsive Grid for Course Cards */
-#wd-dashboard-courses > .row {
-  display: flex;
-  flex-wrap: wrap;
-  margin-right: -10px;
-  margin-left: -10px;
-}
-
-#wd-dashboard-courses > .row > * {
-  padding-right: 10px;
-  padding-left: 10px;
-}
-
-/* Media Queries */
-@media (min-width: 399px) {
-  #wd-kanbas .wd-main-content-offset {
-    padding-left: 10px !important;
-  }
-}
-
-@media (max-height: 600px) {
-  .wd-kanbas-navigation {
-    justify-content: flex-start;
-  }
-  
-  .wd-kanbas-navigation a {
-    padding: 5px 0;
-  }
-  
-  .wd-kanbas-navigation .icon {
-    font-size: 1rem;
-    margin-bottom: 1px;
-  }
-  
-  .wd-kanbas-navigation .label {
-    font-size: 0.6rem;
-  }
-}
+body   {  margin: 0;  padding: 0;  }
+body * {  font-family: Arial, Helvetica, sans-serif;  }
 
 @media (min-width: 768px) {
-  #wd-dashboard {
-    margin-left: 84px; /* Match the width of .wd-kanbas-navigation */
-  }
-  .wd-main-content-offset {
-    margin-left: 110px; /* Adjust based on your navbar width */
+  #wd-kanbas .wd-main-content-offset {
+    padding-left: 140px !important;
   }
 }
 
-@media (max-width: 767px) {
-  #wd-dashboard {
-    margin-left: 0;
-    padding-left: 94px; /* 84px for nav + 10px padding */
+.list-group.wd > .list-group-item.active {
+    color: black;
+    background-color: white;
+    border-left: 3px solid black !important;
   }
-}
+  
+  .btn-secondary {
+    --bs-btn-color: #000 !important;
+    --bs-btn-bg: #c7cdd1 !important;
+    --bs-btn-border-color: #c7cdd1 !important;
+    --bs-btn-hover-color: #fff !important;
+  }
+  .bg-secondary {
+    --bs-secondary-rgb: 199, 205, 209;
+  }
+  .list-group-item {
+    --bs-list-group-border-color: gray;
+  }
+  .wd-lesson {
+    border-left: 3px solid green !important;
+  }
 
-@media (max-width: 750px) {
-  #wd-dashboard {
-    margin-left: 10px;
-  }
-}
+  #wd-search-assignment {
 
-@media (min-width: 1200px) {
-  #wd-dashboard-courses > .row > * {
-    flex: 0 0 25%;
-    max-width: 25%;
+    width: 140px; /* Sets the input width to 200 pixels */
+    height: 48px;
+    border-radius: 10px;
   }
-}
 
-@media (max-width: 1199px) and (min-width: 992px) {
-  #wd-dashboard-courses > .row > * {
-    flex: 0 0 33.333%;
-    max-width: 33.333%;
-  }
-}
+  .wd-rounded-corners-all-around {
+    border-radius: 50px;
+   }
+   
+  #wd-search-box {
 
-@media (max-width: 991px) and (min-width: 768px) {
-  #wd-dashboard-courses > .row > * {
-    flex: 0 0 50%;
-    max-width: 50%;
+    width: 180px; /* Sets the input width to 200 pixels */
+    height: 50px;
+    border-radius: 10px;
   }
-}
 
-@media (max-width: 767px) {
-  #wd-dashboard-courses > .row > * {
-    flex: 0 0 100%;
-    max-width: 100%;
+  .wd-assignment-link{
+    text-decoration: none;
   }
-}
+  

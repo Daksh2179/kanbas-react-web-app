@@ -2,52 +2,69 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { setCurrentUser } from "./reducer";
 import { useDispatch } from "react-redux";
-import * as db from "../Database/index";
+import { user, User } from "../Database";
 
 export default function Signin() {
-  const [credentials, setCredentials] = useState<any>({});
+  const [credentials, setCredentials] = useState<{
+    username: string;
+    password: string;
+  }>({
+    username: "",
+    password: "",
+  });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const signin = () => {
-    const user = db.user.find(
-      (u: any) => u.username === credentials.username && u.password === credentials.password);
+    const foundUser = user.find(
+      (u: User) =>
+        u.username === credentials.username &&
+        u.password === credentials.password
+    );
     
-    if (!user) {
-      // Handle invalid login attempt (e.g., show an error message)
+    if (!foundUser) {
+      alert("Invalid credentials");
       return;
     }
     
-    // If user is found, set the current user in the Redux store
-    dispatch(setCurrentUser(user));
-
-    // Redirect the user to the Dashboard page
+    dispatch(setCurrentUser(foundUser));
     navigate("/Kanbas/Dashboard");
   };
 
   return (
     <div id="wd-signin-screen">
-      <h3>Sign in</h3>
+      <h1>Sign in</h1>
+
       <input
-        defaultValue={credentials.username}
-        onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+        value={credentials.username}
+        onChange={(e) =>
+          setCredentials({ ...credentials, username: e.target.value })
+        }
         id="wd-username"
-        placeholder="username"
+        placeholder="Username"
         className="form-control mb-2"
       />
+
       <input
-        defaultValue={credentials.password}
-        onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+        value={credentials.password}
+        onChange={(e) =>
+          setCredentials({ ...credentials, password: e.target.value })
+        }
         id="wd-password"
-        placeholder="password"
+        placeholder="Password"
         type="password"
         className="form-control mb-2"
       />
-      <button onClick={signin} id="wd-signin-btn" className="btn btn-primary w-100">
+
+      <button
+        onClick={signin}
+        id="wd-signin-btn"
+        className="btn btn-primary w-100 mb-2"
+      >
         Sign in
       </button>
       <Link id="wd-signup-link" to="/Kanbas/Account/Signup">
-        Sign up
+        Don't have an account? Sign up
       </Link>
     </div>
   );

@@ -44,6 +44,7 @@ export interface AssignmentsState {
 }
 
 export interface Course {
+    image?: string;
     _id: string;
     name: string;
     number: string;
@@ -59,7 +60,7 @@ export const modules = modulesData;
 export const enrollment = enrollmentData as Enrollment[];
 export const user = userData as User[];
 export const assignments = assignmentData as unknown as Assignment[];
-export const Course = coursesData;
+export const courses = coursesData as Course[];
 
 // Type guard to check if a role is valid
 export function isValidRole(role: string): role is "FACULTY" | "STUDENT" | "TA" {

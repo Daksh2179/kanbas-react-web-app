@@ -1,39 +1,33 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RootState } from "../store";
 
 export default function AccountNavigation() {
-  const { currentUser } = useSelector((state: RootState) => state.accountReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const links = currentUser
+    ? [{ label: "Profile", path: "/Kanbas/Account/Profile" }]
+    : [
+        { label: "Signin", path: "/Kanbas/Account/Signin" },
+        { label: "Signup", path: "/Kanbas/Account/Signup" },
+      ];
+  const { pathname } = useLocation();
 
   return (
-    <div id="wd-account-navigation">
-      <nav className="nav flex-column">
-        <Link to="/Kanbas/Account/Signin" className="nav-link">
-          Sign In
+    <div
+      id="wd-account-navigation"
+      className="wd list-group fs-4 rounded-0 d-none d-sm-block"
+    >
+      {links.map((link) => (
+        <Link
+          key={link.label}
+          to={link.path}
+          className={`list-group-item ${
+            pathname.includes(link.label) ? "active" : "text-danger"
+          } border border-0`}
+        >
+          {" "}
+          {link.label}{" "}
         </Link>
-        {!currentUser && (
-          <Link to="/Kanbas/Account/Signup" className="nav-link">
-            Sign Up
-          </Link>
-        )}
-        {currentUser && (
-          <>
-            <Link to="/Kanbas/Account/Profile" className="nav-link">
-              Profile
-            </Link>
-            <button
-              onClick={() => {
-                // Sign out logic: clear the current user in the state and navigate to sign-in page
-                localStorage.removeItem("user"); // Assuming you save user data in localStorage or Redux
-                window.location.href = "/Kanbas/Account/Signin";
-              }}
-              className="nav-link btn btn-link"
-            >
-              Sign Out
-            </button>
-          </>
-        )}
-      </nav>
+      ))}
     </div>
   );
 }
