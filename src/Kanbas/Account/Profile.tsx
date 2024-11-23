@@ -3,12 +3,17 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser } from "./reducer";
 import { User, isValidRole } from "../Database";
-
+import * as client from "./client";
 export default function Profile() {
   const [profile, setProfile] = useState<User | null>(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const updateProfile = async () => {
+    const updatedProfile = await client.updateUser(profile);
+    dispatch(setCurrentUser(updatedProfile));
+  };
+
 
   useEffect(() => {
     // Moved fetchProfile logic inside useEffect to avoid dependency issues
@@ -19,14 +24,8 @@ export default function Profile() {
     setProfile(currentUser as User);
   }, [currentUser, navigate]); // Include all dependencies
 
-  const updateProfile = () => {
-    if (profile) {
-      dispatch(setCurrentUser({ ...profile }));
-      alert("Profile updated successfully!");
-    }
-  };
-
-  const signout = () => {
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     navigate("/Kanbas/Account/Signin");
   };
@@ -102,13 +101,7 @@ export default function Profile() {
           <option value="TA">Teaching Assistant</option>
         </select>
         
-        <button
-          onClick={updateProfile}
-          className="btn btn-success w-100 mb-2"
-          id="wd-update-btn"
-        >
-          Update Profile
-        </button>
+        <button onClick={updateProfile} className="btn btn-primary w-100 mb-2"> Update </button>
         
         <button
           onClick={signout}
