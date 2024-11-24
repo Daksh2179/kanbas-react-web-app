@@ -26,7 +26,7 @@ export default function Signin() {
       <h1>Sign in</h1>
 
       <input
-        value={credentials.username}
+        value={credentials.username || ""}
         onChange={(e) =>
           setCredentials({ ...credentials, username: e.target.value })
         }
@@ -36,7 +36,7 @@ export default function Signin() {
       />
 
       <input
-        value={credentials.password}
+        value={credentials.password || ""}
         onChange={(e) =>
           setCredentials({ ...credentials, password: e.target.value })
         }
