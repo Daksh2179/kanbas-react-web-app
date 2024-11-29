@@ -10,7 +10,7 @@ export default function AssignmentEditor() {
   const dispatch = useDispatch();
 
   const assignments = useSelector(
-    (state: any) => state.assignmentReducer.assignments
+    (state: any) => state.assignmentsReducer.assignments
   );
   const assignment = assignments.find(
     (assignment: any) => assignment._id === aid

@@ -1,0 +1,89 @@
+/* Main Page Container */
+.modules-page {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Controls Section */
+.controls-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Adjust layout for smaller screens */
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Main Layout: Modules + Side Panel */
+.layout-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: wrap; /* Stack side panel below modules on small screens */
+}
+
+/* Modules Content */
+.modules-content {
+    flex: 3;
+    overflow-y: auto;
+    min-width: 300px; /* Ensure reasonable minimum width */
+}
+
+/* Side Panel */
+.side-panel {
+    flex: 1;
+    max-width: 300px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.side-panel h3 {
+    margin-bottom: 20px;
+}
+
+.status-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.side-actions button {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* Modules List */
+#wd-modules {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wd-module {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+/* Lessons inside modules */
+.wd-lesson {
+    padding: 10px;
+    background-color: #f7f7f7;
+    border: 1px solid #e0e0e0;
+    margin-top: 5px;
+    border-radius: 4px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .layout-container {
+        flex-direction: column;
+    }
+}

@@ -12,9 +12,20 @@ import * as assignmentsClient from "./client";
 import { useCallback, useEffect } from "react";
 import GreenCheckmark from "../Modules/GreenCheckmark";
 
+interface RootState {
+  assignmentsReducer: {
+    assignments: any[]; // Replace 'any' with a more specific type if possible
+  };
+  accountReducer: {
+    currentUser: {
+      role: string;
+    };
+  };
+}
 function Assignments() {
   const { cid } = useParams();
-  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const { assignments } = useSelector((state: RootState) => state.assignmentsReducer);
+
   const dispatch = useDispatch();
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -25,8 +36,13 @@ function Assignments() {
   };
 
   const fetchAssignments = useCallback(async () => {
-    const assignments = await coursesClient.findAssignmentsForCourse(cid as string);
-    dispatch(setAssignments(assignments));
+    try {
+      const assignments = await coursesClient.findAssignmentsForCourse(cid as string);
+      dispatch(setAssignments(assignments || [])); // Fallback to an empty array if `assignments` is undefined
+    } catch (error) {
+      console.error("Failed to fetch assignments:", error);
+      dispatch(setAssignments([])); // Handle error by dispatching an empty array
+    }
   }, [cid, dispatch]);
   
   useEffect(() => {
@@ -87,7 +103,7 @@ function Assignments() {
       </div>
 
       <ul id="wd-assignment-list" className="list-group rounded-0">
-        {assignments.map((assignment: any) => (
+      {(assignments || []).map((assignment: any) => (
           <li
             key={assignment._id}
             className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex justify-content-between align-items-center"
