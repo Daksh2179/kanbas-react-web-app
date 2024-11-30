@@ -51,3 +51,33 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
     text-decoration: none;
   }
   
+  #wd-dashboard-courses .card {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensures all cards are equal height */
+    margin-right: 15px; /* Adds horizontal spacing between cards */
+  margin-left: 15px; /* Optional for symmetry */
+
+  }
+  
+  #wd-dashboard-courses .card-img-top {
+    height: 190px; /* Set uniform image height */
+    object-fit: cover; /* Maintain aspect ratio of images */
+  }
+  
+  #wd-dashboard-courses .card-body {
+    flex-grow: 0;
+   /* Ensures content fills available space */
+  }
+  
+  #wd-dashboard-courses .card-footer {
+    margin-top: auto; /* Aligns footer buttons to the bottom */
+  }
+
+  #wd-dashboard-courses .col-md-4 {
+    margin-bottom: 20px; /* Adds space between rows */
+  }
+
+  #wd-dashboard-courses {
+    padding: 20px; /* Adds spacing around the grid container */
+  }

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { UserRole } from "./roles";
 import * as courseClient from "./Courses/client";
+import "./style.css";
+import { Link } from "react-router-dom";
 
 export default function Dashboard({
   courses,
@@ -29,15 +30,28 @@ export default function Dashboard({
 }) {
   const { currentUser } = useSelector((state: any) => state.accountReducer) || {};
   const [showAllCourses, setShowAllCourses] = useState(false);
+  const [userEnrolledCourses, setUserEnrolledCourses] = useState<any[]>([]);
 
-  // Check if a user is enrolled in a course
+  // Fetch enrolled courses when the component mounts or user changes
+  useEffect(() => {
+    if (currentUser?._id) {
+      const fetchUserCourses = async () => {
+        try {
+          const courses = await courseClient.findCoursesByEnrolledUser(currentUser._id);
+          setUserEnrolledCourses(courses);
+        } catch (error) {
+          console.error("Error fetching enrolled courses:", error);
+        }
+      };
+      fetchUserCourses();
+    }
+  }, [currentUser]);
+
+  // Check if the user is enrolled in a course
   const isEnrolled = (courseId: string) =>
-    enrollments.some(
-      (enrollment: { user: string; course: string }) =>
-        enrollment.user === currentUser?._id && enrollment.course === courseId
-    );
+    userEnrolledCourses.some((course) => course._id === courseId);
 
-  // Toggle display between all courses and enrolled courses
+  // Toggle between all courses and only enrolled courses
   const toggleEnrollments = () => {
     setShowAllCourses(!showAllCourses);
   };
@@ -64,8 +78,8 @@ export default function Dashboard({
     }
   };
 
-  // Display either all courses or only enrolled courses
-  const displayedCourses = showAllCourses ? allCourses : courses;
+  // Display courses (either all or just enrolled)
+  const displayedCourses = showAllCourses ? allCourses : userEnrolledCourses;
 
   return (
     <div id="wd-dashboard">
@@ -124,27 +138,26 @@ export default function Dashboard({
       </h2>
       <hr />
 
-      <div id="wd-dashboard-courses" className="row">
+      <div id="wd-dashboard-courses" className="row g-3">
         {displayedCourses.map((course) => (
-          <div key={course._id} className="col-md-4">
-            <div className="card mb-3">
+          <div key={course._id} className="col-md-4 d-flex">
+            <div className="card mb-3 w-100">
               <Link
-                to={
-                  isEnrolled(course._id)
-                    ? `/Kanbas/Courses/${course._id}/Home`
-                    : "#"
-                }
+                to={isEnrolled(course._id) ? `/Kanbas/Courses/${course._id}/Home` : "#"}
                 className="text-decoration-none text-dark"
               >
-                <img src={course.image} alt="Course" className="card-img-top" />
+                <img
+                  src={course.image}
+                  alt="Course"
+                  className="card-img-top"
+                  style={{ height: "200px", objectFit: "cover" }}
+                />
                 <div className="card-body">
                   <h5 className="card-title">{course.name || "Unnamed Course"}</h5>
                   <p className="card-text">
                     {course.description || "No description available"}
                   </p>
-                  {isEnrolled(course._id) && (
-                    <button className="btn btn-primary">Go</button>
-                  )}
+                  {isEnrolled(course._id) && <button className="btn btn-primary">Go</button>}
                 </div>
               </Link>
               <div className="card-footer">
@@ -163,6 +176,7 @@ export default function Dashboard({
                     Enroll
                   </button>
                 )}
+
                 {currentUser?.role === UserRole.FACULTY && isEnrolled(course._id) && (
                   <>
                     <button

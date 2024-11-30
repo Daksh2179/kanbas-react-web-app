@@ -9,6 +9,7 @@ export default function Account() {
 
   return (
     <table>
+      <tbody>
       <tr>
         <td valign="top">
           <AccountNavigation />
@@ -33,6 +34,7 @@ export default function Account() {
           </Routes>
         </td>
       </tr>
+      </tbody>
     </table>
   );
 }
