@@ -11,6 +11,10 @@ export default function AccountNavigation() {
       ];
   const { pathname } = useLocation();
 
+  function active(arg0: string) {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <div
       id="wd-account-navigation"
@@ -28,6 +32,8 @@ export default function AccountNavigation() {
           {link.label}{" "}
         </Link>
       ))}
+      {currentUser && currentUser.role === "ADMIN" && (
+       <Link to={`/Kanbas/Account/Users`} className={`list-group-item ${active("Users")}`}> Users </Link> )}
     </div>
   );
 }

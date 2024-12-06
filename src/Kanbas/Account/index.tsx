@@ -4,6 +4,7 @@ import SignIn from "./Signin";
 import Profile from "./Profile";
 import SignUp from "./Signup";
 import AccountNavigation from "./Navigation";
+import Users from "./Users";
 export default function Account() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
@@ -31,6 +32,8 @@ export default function Account() {
             <Route path="/Signin" element={<SignIn />} />
             <Route path="/Profile" element={<Profile />} />
             <Route path="/Signup" element={<SignUp />} />
+            <Route path="/Users" element={<Users />} />
+            <Route path="/Users/:uid" element={<Users />} />
           </Routes>
         </td>
       </tr>
