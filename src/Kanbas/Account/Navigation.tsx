@@ -3,12 +3,12 @@ import { useSelector } from "react-redux";
 
 export default function AccountNavigation() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const links = currentUser
-    ? [{ label: "Profile", path: "/Kanbas/Account/Profile" }]
-    : [
-        { label: "Signin", path: "/Kanbas/Account/Signin" },
-        { label: "Signup", path: "/Kanbas/Account/Signup" },
-      ];
+  const links = [
+    { label: "Signin", path: "/Kanbas/Account/Signin" },
+    { label: "Signup", path: "/Kanbas/Account/Signup" },
+    { label: "Profile", path: "/Kanbas/Account/Profile" },
+    { label: "Users", path: "/Kanbas/Account/Users" },
+  ];
   const { pathname } = useLocation();
 
   function active(arg0: string) {
@@ -28,12 +28,9 @@ export default function AccountNavigation() {
             pathname.includes(link.label) ? "active" : "text-danger"
           } border border-0`}
         >
-          {" "}
-          {link.label}{" "}
+          {link.label}
         </Link>
       ))}
-      {currentUser && currentUser.role === "ADMIN" && (
-       <Link to={`/Kanbas/Account/Users`} className={`list-group-item ${active("Users")}`}> Users </Link> )}
     </div>
   );
 }

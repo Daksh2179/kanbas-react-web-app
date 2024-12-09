@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-  currentUser: null,
+  currentUser: [],
 };
 const accountSlice = createSlice({
   name: "account",
@@ -10,7 +10,7 @@ const accountSlice = createSlice({
       state.currentUser = action.payload;
     },
     clearCurrentUser: (state) => {
-      state.currentUser = null;
+      state.currentUser = [];
     }
   },
 });

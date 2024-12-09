@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { setCurrentUser } from "./reducer";
 import { useDispatch } from "react-redux";
 import * as client from "./client";
+import axios from "axios";
 
 export default function Signin() {
   const [credentials, setCredentials] = useState<any>({});
@@ -10,11 +11,23 @@ export default function Signin() {
   const navigate = useNavigate();
 
   const signin = async () => {
-    const user = await client.signin(credentials);
-    if (!user) return;
-    dispatch(setCurrentUser(user));
-    navigate("/Kanbas/Account/Profile");
+    try {
+      const user = await client.signin(credentials);
+      if (!user) return;
+      dispatch(setCurrentUser(user));
+      navigate("/Kanbas/Account/Profile");
+    } catch (error) {
+      if (error instanceof axios.AxiosError) {
+        console.error("Axios error details:", error.response);
+        console.error("Axios error message:", error.message);
+        console.error("Axios error status:", error.response?.status);
+        console.error("Axios error data:", error.response?.data);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+    }
   };
+  
 
   return (
     <div id="wd-signin-screen">

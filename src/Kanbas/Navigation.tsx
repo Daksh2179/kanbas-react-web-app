@@ -1,48 +1,72 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { FaUser, FaTachometerAlt, FaBook, FaCalendarAlt, FaInbox, FaCog } from 'react-icons/fa';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import "./style.css";
-
-const links = [
-  { to: '/Kanbas/Account', icon: FaUser, label: 'Account', iconClass: 'text-danger' },
-  { to: '/Kanbas/Dashboard', icon: FaTachometerAlt, label: 'Dashboard' },
-  { to: '/Kanbas/Courses', icon: FaBook, label: 'Courses' },
-  { to: '/Kanbas/Calendar', icon: FaCalendarAlt, label: 'Calendar' },
-  { to: '/Kanbas/Inbox', icon: FaInbox, label: 'Inbox' },
-  { to: '/Labs', icon: FaCog, label: 'Labs' },
-];
+import { Link, useLocation } from "react-router-dom";
+import { AiOutlineDashboard } from "react-icons/ai";
+import { IoCalendarOutline } from "react-icons/io5";
+import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
+import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
 
 function KanbasNavigation() {
   const { pathname } = useLocation();
+  const links = [
+    { label: "Dashboard", path: "/Kanbas/Dashboard", icon: AiOutlineDashboard },
+    { label: "Courses", path: "/Kanbas/Dashboard", icon: LiaBookSolid },
+    { label: "Calendar", path: "/Kanbas/Calendar", icon: IoCalendarOutline },
+    { label: "Inbox", path: "/Kanbas/Inbox", icon: FaInbox },
+    { label: "Labs", path: "/Labs", icon: LiaCogSolid },
+  ];
 
   return (
-    <div className="wd-kanbas-navigation d-flex flex-column bg-black" style={{ width: '84px', position: 'fixed', left: 0, top: 0, bottom: 0, overflowY: 'auto' }}>
-      <Link to="/Kanbas" className="p-2 text-center">
-        <img src="/images/neulogo.svg" alt="N Logo" width="50" height="50" />
-      </Link>
-      {links.map((link) => {
-        const isSelected = pathname.includes(link.label);
-        return (
-          <Link
-            key={link.to}
-            to={link.to}
-            className={`p-2 text-center text-decoration-none ${
-              isSelected ? 'bg-white' : ''
+    <div
+      id="wd-kanbas-navigation"
+      style={{ width: 110 }}
+      className="list-group rounded-0 position-fixed
+    bottom-0 top-0 d-none d-md-block bg-black z-2"
+    >
+      <a
+        href="https://www.northeastern.edu/"
+        id="wd-neu-link"
+        target="_blank"
+        rel="noreferrer"
+        className="list-group-item bg-black border-0 text-center"
+      >
+        <img alt="NEU" src="/images/NEU.png" width="75px" />
+      </a>
+
+      {/* ACCOUNT */}
+      <Link
+        to="/Kanbas/Account"
+        className={`list-group-item text-center border-0 bg-black
+            ${
+              pathname.includes("Account")
+                ? "bg-white text-danger"
+                : "bg-black text-white"
             }`}
-          >
-            <link.icon 
-              className={`fs-5 text-danger`} 
-            />
-            <div 
-              className={`small mt-1 ${isSelected ? 'text-danger' : 'text-white'}`}
-              style={{ fontSize: '0.65rem' }}
-            >
-              {link.label}
-            </div>
-          </Link>
-        );
-      })}
+      >
+        <FaRegCircleUser
+          className={`fs-1 ${
+            pathname.includes("Account") ? "text-danger" : "text-white"
+          }`}
+        />
+        <br />
+        Account
+      </Link>
+
+      {/* OTHER LINKS */}
+      {links.map((link) => (
+        <Link
+          key={link.path}
+          to={link.path}
+          className={`list-group-item bg-black text-center border-0
+              ${
+                pathname.includes(link.label)
+                  ? "text-danger bg-white"
+                  : "text-white bg-black"
+              }`}
+        >
+          {link.icon({ className: "fs-1 text-danger" })}
+          <br />
+          {link.label}
+        </Link>
+      ))}
     </div>
   );
 }

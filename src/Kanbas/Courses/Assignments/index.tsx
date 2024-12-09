@@ -1,31 +1,21 @@
 import { BsGripVertical } from "react-icons/bs";
-import { CiSearch } from "react-icons/ci";
-import { IoEllipsisVertical } from "react-icons/io5";
-import { useParams } from "react-router";
-import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment, setAssignments } from "./reducer";
-import { Link } from "react-router-dom";
-import { FaPlus, FaTrash } from "react-icons/fa6";
+import { BiSearch } from "react-icons/bi";
 import { LuFileEdit } from "react-icons/lu";
+import { IoEllipsisVertical } from "react-icons/io5";
+import { FaPlus } from "react-icons/fa6";
+import { FaTrash } from "react-icons/fa";
+import GreenCheckmark from "../Modules/GreenCheckmark";
+import { useParams } from "react-router";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteAssignment, setAssignments } from "./reducer";
+import { useEffect } from "react";
 import * as coursesClient from "../client";
 import * as assignmentsClient from "./client";
-import { useCallback, useEffect } from "react";
-import GreenCheckmark from "../Modules/GreenCheckmark";
 
-interface RootState {
-  assignmentsReducer: {
-    assignments: any[]; // Replace 'any' with a more specific type if possible
-  };
-  accountReducer: {
-    currentUser: {
-      role: string;
-    };
-  };
-}
 function Assignments() {
   const { cid } = useParams();
-  const { assignments } = useSelector((state: RootState) => state.assignmentsReducer);
-
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
   const dispatch = useDispatch();
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -35,26 +25,22 @@ function Assignments() {
     dispatch(deleteAssignment(assignmentId));
   };
 
-  const fetchAssignments = useCallback(async () => {
-    try {
-      const assignments = await coursesClient.findAssignmentsForCourse(cid as string);
-      dispatch(setAssignments(assignments || [])); // Fallback to an empty array if `assignments` is undefined
-    } catch (error) {
-      console.error("Failed to fetch assignments:", error);
-      dispatch(setAssignments([])); // Handle error by dispatching an empty array
-    }
-  }, [cid, dispatch]);
-  
+  const fetchAssignments = async () => {
+    const assignments = await coursesClient.findAssignmentsForCourse(
+      cid as string
+    );
+    dispatch(setAssignments(assignments));
+  };
   useEffect(() => {
     fetchAssignments();
-  }, [fetchAssignments]);
+  }, []);
 
   return (
     <div id="wd-assignments" className="container">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div className="input-group me-2 w-50">
           <span className="input-group-text">
-            <CiSearch />
+            <BiSearch />
           </span>
           <input
             id="wd-search-assignment"
@@ -103,7 +89,7 @@ function Assignments() {
       </div>
 
       <ul id="wd-assignment-list" className="list-group rounded-0">
-      {(assignments || []).map((assignment: any) => (
+        {assignments.map((assignment: any) => (
           <li
             key={assignment._id}
             className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex justify-content-between align-items-center"
