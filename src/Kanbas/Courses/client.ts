@@ -88,3 +88,19 @@ export const unenrollUserFromCourse = async (courseId: string) => {
   );
   return response.data;
 };
+
+export const updateEnrollment = async (courseId: string, enrolled: boolean) => {
+  if (enrolled) {
+    const response = await axiosWithCredentials.post(
+      `${ENROLLMENTS_API}/enroll/${courseId}`,
+      courseId
+    );
+    return response.data;
+  } else {
+    const response = await axiosWithCredentials.post(
+      `${ENROLLMENTS_API}/unenroll/${courseId}`,
+      courseId
+    );
+    return response.data;
+  }
+};

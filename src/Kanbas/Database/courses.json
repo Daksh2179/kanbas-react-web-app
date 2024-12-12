@@ -8,7 +8,7 @@
       "department": "CS",
       "credits": 3,
       "description": "This Front-End Developer Course offers a comprehensive exploration of the React.js framework and modern web development techniques. Participants will delve into the essential concepts of React, including component-based architecture, state management, and lifecycle methods. The curriculum covers advanced topics such as hooks, context API, and routing, building responsive and accessible user interfaces.",
-      "logo": "/images/reactjs.webp"
+      "image": "/images/reactjs.webp"
     },
     {
       "_id": "5610",
